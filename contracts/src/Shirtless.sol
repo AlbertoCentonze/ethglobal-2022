@@ -7,6 +7,7 @@ import "@openzeppelin/security/Pausable.sol";
 import "@openzeppelin/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/token/ERC1155/extensions/ERC1155Supply.sol";
 
+// TODO Yes, shirtless is just a placeholder name
 contract Shirtless is ERC1155, Ownable, Pausable, ERC1155Burnable, ERC1155Supply {
     constructor() ERC1155("https://donthaveoneyet.com") {}
 
