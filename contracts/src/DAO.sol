@@ -10,8 +10,6 @@ import "@openzeppelin/utils/Counters.sol";
 import "@openzeppelin/utils/Address.sol";
 import "@forge-std/console.sol";
 
-error SetUpError();
-
 contract Dao is Ownable {
     using Address for address;
     using Counters for Counters.Counter;
