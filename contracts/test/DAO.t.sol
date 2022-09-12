@@ -33,7 +33,8 @@ contract DaoTest is TestWithHelpers {
     }
 
     function testFailMintWithoutSplitter() public {
-        dao.mint();
+        // vm.expectRevert(SetUpError);
+        dao.mint{value: 1 ether}(); //TODO this test is wrong
     }
 
     function testFailMintWithNotEnoughMoney() public {
@@ -45,7 +46,7 @@ contract DaoTest is TestWithHelpers {
     }
 
     function mintUpToId(uint256 maxId) public {
-        address RANDOM = address(43);
+        address RANDOM = address(34987);
         vm.deal(RANDOM, 1001 ether);
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < maxId; id++) {
@@ -62,7 +63,8 @@ contract DaoTest is TestWithHelpers {
         mintUpToId(100);
     }
 
-    function testFailMintMoreThanMaxSupply() public {
-        mintUpToId(101);
+    function testFailMintMoreThanMaxSupply(uint256 idBiggerThanSupply) public {
+        vm.assume(idBiggerThanSupply > 100);
+        mintUpToId(idBiggerThanSupply);
     }
 }
