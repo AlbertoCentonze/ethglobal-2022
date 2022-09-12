@@ -13,46 +13,51 @@ import "@forge-std/console.sol";
 error SetUpError();
 
 contract Dao is Ownable {
-	using Address for address;
-	using Counters for Counters.Counter;
+    using Address for address;
+    using Counters for Counters.Counter;
 
-	Shirtless collection;
-	IVault[] vaults;
-	PaymentSplitter mintSplitter;
-	uint256 price = 1 ether;
-	Counters.Counter mintId;
+    Shirtless collection;
+    IVault[] vaults;
+    PaymentSplitter mintSplitter;
+    uint256 price = 1 ether;
+    uint256 totalSupply = 100; // TODO Should total supply be mutable ?
+    Counters.Counter mintId;
 
-	function setCollection(address collectionAddress) onlyOwner public {
-		collection = Shirtless(collectionAddress);
-	}
+    function setCollection(address collectionAddress) public onlyOwner {
+        collection = Shirtless(collectionAddress);
+    }
 
-	function setMintSplitter(address payable splitter) onlyOwner public { //TODO payable? why?
-		mintSplitter = PaymentSplitter(splitter);
-	}
+    function setMintSplitter(address payable splitter) public onlyOwner {
+        //TODO payable? why?
+        mintSplitter = PaymentSplitter(splitter);
+    }
 
-	function setPrice(uint256 newPrice) onlyOwner public {
-		require(newPrice > 0); // TODO require or revert ? that is the question
-		price = newPrice;
-	}
+    function setPrice(uint256 newPrice) public onlyOwner {
+        require(newPrice > 0); // TODO require or revert ? that is the question
+        price = newPrice;
+    }
 
-	function claimAllRewards() public {
-		for (uint256 index = 0; index < vaults.length; index++) {
-			vaults[index].claim();
-		}
-	}
+    function claimAllRewards() public {
+        for (uint256 index = 0; index < vaults.length; index++) {
+            vaults[index].claim();
+        }
+    }
 
-	function mint() public payable {
-		console.log("HERE");
-		if (!address(mintSplitter).isContract())  // TODO is it safe to use isContract? Check openzeppeliln
-			revert SetUpError();
+    function mint() public payable {
+        if (
+            !address(mintSplitter).isContract() // TODO is it safe to use isContract? Check openzeppeliln
+        ) {
+            revert SetUpError();
+        }
 
-		require(msg.value == price);
+        require(mintId.current() < totalSupply);
+        require(msg.value == price);
 
-		collection.mint(msg.sender, mintId.current(), 1, "");
-		mintId.increment();
-	}
-	
-	// TODO find a way to distrubte the revenues owned by this address:
-	// - currently discussing on the superfluid discord to find a way to 
-	// do this with IDAs
+        collection.mint(msg.sender, mintId.current(), 1, "");
+        mintId.increment();
+    }
+
+    // TODO find a way to distrubte the revenues owned by this address:
+    // - currently discussing on the superfluid discord to find a way to
+    // do this with IDAs
 }
