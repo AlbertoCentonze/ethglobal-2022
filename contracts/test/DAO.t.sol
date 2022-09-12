@@ -9,8 +9,8 @@ import "../src/DAO.sol";
 import "@openzeppelin/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
-    address[] payees = [DEV_FUND];
-    uint256[] shares = [9, 1];
+    address[] payees;
+    uint256[] shares;
 
     Dao dao;
     Shirtless collection;
@@ -29,6 +29,7 @@ contract DaoTest is TestWithHelpers {
 
     function setUpSplitter() public {
         payees = [DEV_FUND, address(dao)]; // Solidity sucks
+        shares = [9, 1];
         dao.setMintSplitter(payable(address(new PaymentSplitter(payees, shares))));
     }
 

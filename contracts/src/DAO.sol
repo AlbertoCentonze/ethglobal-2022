@@ -23,6 +23,9 @@ contract Dao is Ownable {
     uint256 totalSupply = 100; // TODO Should total supply be mutable ?
     Counters.Counter mintId;
 
+
+    //TODO: Antoine. constructor with address for mintSplitter and check other things
+
     function setCollection(address collectionAddress) public onlyOwner {
         collection = Shirtless(collectionAddress);
     }
@@ -44,12 +47,8 @@ contract Dao is Ownable {
     }
 
     function mint() public payable {
-        if (
-            !address(mintSplitter).isContract() // TODO is it safe to use isContract? Check openzeppeliln
-        ) {
-            revert SetUpError();
-        }
-
+        //TODO replace with revert and custom error
+        require(!address(mintSplitter).isContract()); // TODO is it safe to use isContract? Check openzeppeliln
         require(mintId.current() < totalSupply);
         require(msg.value == price);
 
