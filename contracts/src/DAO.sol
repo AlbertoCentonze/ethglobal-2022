@@ -54,6 +54,14 @@ contract Dao is Ownable {
         mintId.increment();
     }
 
+    function burn(uint _id) public {
+        collection.safeTransferFrom(msg.sender, address(this), id, 1, );//last argument is empty data
+        collection.burn(msg.sender, _id, 1);
+        for(int i = 0; i<vaults.length; i++){
+            vaults[i].claim(msg.msg.sender);
+        }
+    }
+
     // TODO find a way to distrubte the revenues owned by this address:
     // - currently discussing on the superfluid discord to find a way to
     // do this with IDAs
