@@ -64,7 +64,11 @@ contract DaoTest is TestWithHelpers {
         mintUpToId(100);
     }
 
-    function testFailMintMoreThanMaxSupply(uint256 idBiggerThanSupply) public {
+    function testFailMintMoreThanMaxSupply() public {
+        mintUpToId(101);
+    }
+
+    function testFailMintMoreThanMaxSupplyBuzz(uint256 idBiggerThanSupply) public {
         vm.assume(idBiggerThanSupply > 100);
         mintUpToId(idBiggerThanSupply);
     }

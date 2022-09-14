@@ -29,40 +29,33 @@ contract Dao is Ownable {
     }
 
     function setMintSplitter(address payable splitter) public onlyOwner {
-        //TODO payable? why?
         mintSplitter = PaymentSplitter(splitter);
     }
 
     function setPrice(uint256 newPrice) public onlyOwner {
-        require(newPrice > 0); // TODO require or revert ? that is the question
+        require(newPrice > 0);
         price = newPrice;
     }
 
     function claimAllRewards() public {
         for (uint256 index = 0; index < vaults.length; index++) {
-            vaults[index].claim();
+            vaults[index].claim(address(this));
         }
     }
 
     function mint() public payable {
         //TODO replace with revert and custom error
-        require(!address(mintSplitter).isContract()); // TODO is it safe to use isContract? Check openzeppeliln
-        require(mintId.current() < totalSupply);
-        require(msg.value == price);
+        require(!address(mintSplitter).isContract(), "Splitter is not set correctly"); // TODO is it safe to use isContract? Check openzeppeliln
+        require(mintId.current() < totalSupply, "Can't mint more NFTs than max supply");
+        require(msg.value == price, "Value sent in tx does not match mint price");
 
         collection.mint(msg.sender, mintId.current(), 1, "");
         mintId.increment();
     }
 
-    function burn(uint _id) public {
-        collection.safeTransferFrom(msg.sender, address(this), id, 1, );//last argument is empty data
-        collection.burn(msg.sender, _id, 1);
-        for(int i = 0; i<vaults.length; i++){
-            vaults[i].claim(msg.msg.sender);
-        }
+    function burn(uint id) public {
     }
 
     // TODO find a way to distrubte the revenues owned by this address:
-    // - currently discussing on the superfluid discord to find a way to
-    // do this with IDAs
+    // Check on the group for a possible example of an implementation
 }
