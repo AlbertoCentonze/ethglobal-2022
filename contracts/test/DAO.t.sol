@@ -9,7 +9,7 @@ import "../src/DAO.sol";
 import "@openzeppelin/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
-		address RANDOM = address(34987);
+	address RANDOM = address(34987);
     address[] payees;
     uint256[] shares;
 
@@ -26,7 +26,6 @@ contract DaoTest is TestWithHelpers {
         collection.transferOwnership(address(dao));
         dao.setCollection(address(collection));
 
-        
         setUpSplitter();
     }
 
@@ -90,6 +89,25 @@ contract DaoTest is TestWithHelpers {
 
         uint256 idBalance = collection.balanceOf(RANDOM, 1);
         assertEq(idBalance, 0);
+
+        idBalance = collection.balanceOf(RANDOM, 0);
+        assertEq(idBalance, 1);
+
+
+        vm.stopPrank();
+    }
+
+    function testBurnTransfer() public {
+        vm.deal(RANDOM, 2 ether);
+        vm.startPrank(RANDOM);
+
+        dao.mint{value: 1 ether}();
+        dao.mint{value: 1 ether}();
+
+        dao.burn(1);
+
+        uint256 ethBalance = RANDOM.balance;
+        assertEq(ethBalance, 0.5 ether);
 
         vm.stopPrank();
     }

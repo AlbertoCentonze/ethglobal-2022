@@ -57,6 +57,10 @@ contract Dao is Ownable {
     function burn(uint id) public {
         collection.burnNFT(msg.sender, id, 1);
         mintId.decrement();
+
+        // After burn transfer the slashed price to the burner
+        (bool sent, bytes memory data) = msg.sender.call{value: 0.5 ether}("");
+        require(sent, "Failed to send Ether after burn");
     }
 
     // TODO find a way to distrubte the revenues owned by this address:
