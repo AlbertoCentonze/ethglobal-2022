@@ -23,12 +23,13 @@ contract Dao is Ownable {
 
 
     //TODO: Antoine. constructor with address for mintSplitter and check other things
-
     function setCollection(address collectionAddress) public onlyOwner {
         collection = Shirtless(collectionAddress);
     }
 
-    function setMintSplitter(address payable splitter) public onlyOwner {
+		//TODO contract type vs address ?
+    function setMintSplitter(PaymentSplitter splitter) public onlyOwner {
+			// TODO require nonZero ? It would break the tests
         mintSplitter = PaymentSplitter(splitter);
     }
 
@@ -45,7 +46,7 @@ contract Dao is Ownable {
 
     function mint() public payable {
         //TODO replace with revert and custom error
-        require(!address(mintSplitter).isContract(), "Splitter is not set correctly"); // TODO is it safe to use isContract? Check openzeppeliln
+        require(address(mintSplitter).isContract(), "Splitter is not set correctly"); // TODO is it safe to use isContract? Check openzeppeliln
         require(mintId.current() < totalSupply, "Can't mint more NFTs than max supply");
         require(msg.value == price, "Value sent in tx does not match mint price");
 

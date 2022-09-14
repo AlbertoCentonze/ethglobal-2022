@@ -9,6 +9,7 @@ import "../src/DAO.sol";
 import "@openzeppelin/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
+		address RANDOM = address(34987);
     address[] payees;
     uint256[] shares;
 
@@ -21,6 +22,7 @@ contract DaoTest is TestWithHelpers {
         // Deploy the NFT collection
         collection = new Shirtless();
 
+				// Gives the dao control on the NFT collection
         collection.transferOwnership(address(dao));
         dao.setCollection(address(collection));
 
@@ -31,25 +33,29 @@ contract DaoTest is TestWithHelpers {
     function setUpSplitter() public {
         payees = [DEV_FUND, address(dao)]; // Solidity sucks
         shares = [9, 1];
-        dao.setMintSplitter(payable(address(new PaymentSplitter(payees, shares))));
+        dao.setMintSplitter(new PaymentSplitter(payees, shares));
+
+				// Gives money to RANDOM user address to be used in tests
+        vm.deal(RANDOM, 1001 ether);
     }
 
-    function testFailMintWithoutSplitter() public {
-        // vm.expectRevert(SetUpError);
-        dao.mint{value: 1 ether}(); //TODO this test is wrong
+    function testCannotMintWithoutSplitter() public {
+				dao.setMintSplitter(PaymentSplitter(payable(0)));
+        vm.expectRevert(bytes("Splitter is not set correctly"));
+        dao.mint{value: 1 ether}(); 
     }
 
-    function testFailMintWithNotEnoughMoney() public {
+    function testCannotMintWithNotEnoughMoney() public {
+        vm.expectRevert(bytes("Value sent in tx does not match mint price"));
         dao.mint{value: 0.5 ether}();
     }
 
-    function testFailMintWithTooMuchMoney() public {
+    function testCannotMintWithTooMuchMoney() public {
+        vm.expectRevert(bytes("Value sent in tx does not match mint price"));
         dao.mint{value: 1.5 ether}();
     }
 
     function mintUpToId(uint256 maxId) public {
-        address RANDOM = address(34987);
-        vm.deal(RANDOM, 1001 ether);
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < maxId; id++) {
             uint256 idBalance = collection.balanceOf(RANDOM, id);
