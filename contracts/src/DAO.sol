@@ -28,7 +28,7 @@ contract Dao is Ownable {
         collection = Shirtless(collectionAddress);
     }
 
-    function setMintSplitter(address payable splitter) public onlyOwner {
+    function setMintSplitter(PaymentSplitter splitter) public onlyOwner {
         mintSplitter = PaymentSplitter(splitter);
     }
 

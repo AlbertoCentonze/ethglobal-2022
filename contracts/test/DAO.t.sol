@@ -9,6 +9,7 @@ import "../src/DAO.sol";
 import "@openzeppelin/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
+		address RANDOM = address(34987);
     address[] payees;
     uint256[] shares;
 
@@ -25,16 +26,18 @@ contract DaoTest is TestWithHelpers {
         dao.setCollection(address(collection));
 
         setUpSplitter();
+
+        vm.deal(RANDOM, 1001 ether);
     }
 
     function setUpSplitter() public {
         payees = [DEV_FUND, address(dao)]; // Solidity sucks
         shares = [9, 1];
-        dao.setMintSplitter(payable(address(new PaymentSplitter(payees, shares))));
+        dao.setMintSplitter(new PaymentSplitter(payees, shares));
     }
 
-    function testFailMintWithoutSplitter() public {
-        // vm.expectRevert(SetUpError);
+    function testCannotMintWithoutSplitter() public {
+        vm.expectRevert(bytes("Splitter is not set correctly"));
         dao.mint{value: 1 ether}(); //TODO this test is wrong
     }
 
@@ -47,8 +50,6 @@ contract DaoTest is TestWithHelpers {
     }
 
     function mintUpToId(uint256 maxId) public {
-        address RANDOM = address(34987);
-        vm.deal(RANDOM, 1001 ether);
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < maxId; id++) {
             uint256 idBalance = collection.balanceOf(RANDOM, id);
