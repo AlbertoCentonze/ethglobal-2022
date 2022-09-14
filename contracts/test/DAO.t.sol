@@ -24,6 +24,7 @@ contract DaoTest is TestWithHelpers {
         collection.transferOwnership(address(dao));
         dao.setCollection(address(collection));
 
+        
         setUpSplitter();
     }
 
@@ -71,5 +72,21 @@ contract DaoTest is TestWithHelpers {
     function testFailMintMoreThanMaxSupplyBuzz(uint256 idBiggerThanSupply) public {
         vm.assume(idBiggerThanSupply > 100);
         mintUpToId(idBiggerThanSupply);
+    }
+
+    function testBurnSupply() public {
+        address RANDOM = address(34987);
+        vm.deal(RANDOM, 1001 ether);
+        vm.startPrank(RANDOM);
+
+        dao.mint{value: 1 ether}();
+        dao.mint{value: 1 ether}();
+
+        dao.burn(1);
+
+        uint256 idBalance = collection.balanceOf(RANDOM, 1);
+        assertEq(idBalance, 0);
+
+        vm.stopPrank();
     }
 }

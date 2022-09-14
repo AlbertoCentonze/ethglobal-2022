@@ -54,6 +54,8 @@ contract Dao is Ownable {
     }
 
     function burn(uint id) public {
+        collection.burnNFT(msg.sender, id, 1);
+        mintId.decrement();
     }
 
     // TODO find a way to distrubte the revenues owned by this address:
