@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/token/ERC1155/ERC1155.sol";//TODO: use solmate's implementation
+import "@openzeppelin/token/ERC1155/ERC1155.sol"; //TODO: use solmate's implementation
 import "@openzeppelin/access/Ownable.sol";
 import "@openzeppelin/security/Pausable.sol";
 import "@openzeppelin/token/ERC1155/extensions/ERC1155Burnable.sol"; //I don't know if this is already included in solmate's implementation

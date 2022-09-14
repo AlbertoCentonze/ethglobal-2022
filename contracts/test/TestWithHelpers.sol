@@ -9,4 +9,5 @@ import "@openzeppelin/utils/Counters.sol";
  */
 abstract contract TestWithHelpers is Test {
     address internal DEV_FUND = address(657489);
+    address internal RANDOM = address(34987);
 }

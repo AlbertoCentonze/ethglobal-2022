@@ -27,9 +27,9 @@ contract Dao is Ownable {
         collection = Shirtless(collectionAddress);
     }
 
-		//TODO contract type vs address ?
+    //TODO contract type vs address ?
     function setMintSplitter(PaymentSplitter splitter) public onlyOwner {
-			// TODO require nonZero ? It would break the tests tho
+        // TODO require nonZero ? It would break the tests tho
         mintSplitter = PaymentSplitter(splitter);
     }
 
@@ -39,7 +39,7 @@ contract Dao is Ownable {
     }
 
     function claimAllRewards() public {
-			// TODO this is totally a placeholder
+        // TODO this is totally a placeholder
         for (uint256 index = 0; index < vaults.length; index++) {
             vaults[index].claim(address(this));
         }
@@ -54,7 +54,7 @@ contract Dao is Ownable {
         mintId.increment();
     }
 
-    function burn(uint id) public {
+    function burn(uint256 id) public {
         collection.burn(msg.sender, id, 1);
         mintId.decrement();
 

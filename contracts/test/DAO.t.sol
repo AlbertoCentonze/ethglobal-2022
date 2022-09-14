@@ -9,7 +9,6 @@ import "../src/DAO.sol";
 import "@openzeppelin/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
-	address RANDOM = address(34987);
     address[] payees;
     uint256[] shares;
 
@@ -22,7 +21,7 @@ contract DaoTest is TestWithHelpers {
         // Deploy the NFT collection
         collection = new Shirtless();
 
-				// Gives the dao control on the NFT collection
+        // Gives the dao control on the NFT collection
         collection.transferOwnership(address(dao));
         dao.setCollection(address(collection));
 
@@ -34,14 +33,14 @@ contract DaoTest is TestWithHelpers {
         shares = [9, 1];
         dao.setMintSplitter(new PaymentSplitter(payees, shares));
 
-				// Gives money to RANDOM user address to be used in tests
+        // Gives money to RANDOM user address to be used in tests
         vm.deal(RANDOM, 1001 ether);
     }
 
     function testCannotMintWithoutSplitter() public {
-		dao.setMintSplitter(PaymentSplitter(payable(0)));
+        dao.setMintSplitter(PaymentSplitter(payable(0)));
         vm.expectRevert(bytes("Splitter is not set correctly"));
-        dao.mint{value: 1 ether}(); 
+        dao.mint{value: 1 ether}();
     }
 
     function testCannotMintWithNotEnoughMoney() public {
@@ -81,19 +80,18 @@ contract DaoTest is TestWithHelpers {
 
     // function testBurnSupply() public {
     //     vm.startPrank(RANDOM);
-        
-	// 			assertEq(collection.balanceOf(RANDOM, 1), 0);
+
+    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
 
     //     dao.mint{value: 1 ether}();
     //     dao.mint{value: 1 ether}();
-	// 			assertEq(collection.balanceOf(RANDOM, 1), 1);
+    // 			assertEq(collection.balanceOf(RANDOM, 1), 1);
 
     //     dao.burn(1);
-	// 			assertEq(collection.balanceOf(RANDOM, 1), 0);
+    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
 
     //     idBalance = collection.balanceOf(RANDOM, 0);
     //     assertEq(idBalance, 1);
-
 
     //     vm.stopPrank();
     // }
