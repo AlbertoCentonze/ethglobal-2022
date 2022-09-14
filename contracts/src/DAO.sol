@@ -21,15 +21,15 @@ contract Dao is Ownable {
     uint256 totalSupply = 100; // TODO Should total supply be mutable ?
     Counters.Counter mintId;
 
+    //TODO: make a constructor with address for mintSplitter ecc
 
-    //TODO: Antoine. constructor with address for mintSplitter and check other things
     function setCollection(address collectionAddress) public onlyOwner {
         collection = Shirtless(collectionAddress);
     }
 
 		//TODO contract type vs address ?
     function setMintSplitter(PaymentSplitter splitter) public onlyOwner {
-			// TODO require nonZero ? It would break the tests
+			// TODO require nonZero ? It would break the tests tho
         mintSplitter = PaymentSplitter(splitter);
     }
 
@@ -39,14 +39,14 @@ contract Dao is Ownable {
     }
 
     function claimAllRewards() public {
+			// TODO this is totally a placeholder
         for (uint256 index = 0; index < vaults.length; index++) {
             vaults[index].claim(address(this));
         }
     }
 
     function mint() public payable {
-        //TODO replace with revert and custom error
-        require(address(mintSplitter).isContract(), "Splitter is not set correctly"); // TODO is it safe to use isContract? Check openzeppeliln
+        require(address(mintSplitter).isContract(), "Splitter is not set correctly");
         require(mintId.current() < totalSupply, "Can't mint more NFTs than max supply");
         require(msg.value == price, "Value sent in tx does not match mint price");
 
@@ -55,7 +55,7 @@ contract Dao is Ownable {
     }
 
     function burn(uint id) public {
-        collection.burnNFT(msg.sender, id, 1);
+        collection.burn(msg.sender, id, 1);
         mintId.decrement();
 
         // After burn transfer the slashed price to the burner

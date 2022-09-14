@@ -49,7 +49,7 @@ contract Shirtless is ERC1155, Ownable, Pausable, ERC1155Burnable, ERC1155Supply
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
-    function burnNFT(address account, uint256 id, uint256 amount) public onlyOwner {
+    function burn(address account, uint256 id, uint256 amount) public onlyOwner {
         _burn(account, id, amount);
     }
 }
