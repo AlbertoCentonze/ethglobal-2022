@@ -40,7 +40,7 @@ contract DaoTest is TestWithHelpers {
     }
 
     function testCannotMintWithoutSplitter() public {
-				dao.setMintSplitter(PaymentSplitter(payable(0)));
+		dao.setMintSplitter(PaymentSplitter(payable(0)));
         vm.expectRevert(bytes("Splitter is not set correctly"));
         dao.mint{value: 1 ether}(); 
     }
@@ -81,8 +81,6 @@ contract DaoTest is TestWithHelpers {
     }
 
     function testBurnSupply() public {
-        address RANDOM = address(34987);
-        vm.deal(RANDOM, 1001 ether);
         vm.startPrank(RANDOM);
 
         dao.mint{value: 1 ether}();
