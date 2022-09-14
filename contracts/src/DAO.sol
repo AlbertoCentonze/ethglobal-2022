@@ -55,7 +55,7 @@ contract Dao is Ownable {
     }
 
     function burn(uint id) public {
-        collection.burnNFT(msg.sender, id, 1);
+        collection.burn(msg.sender, id, 1);
         mintId.decrement();
     }
 
