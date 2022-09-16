@@ -17,8 +17,11 @@ contract Dao is Ownable {
     Shirtless collection;
     IVault[] vaults;
     PaymentSplitter mintSplitter;
-    uint256 price = 1 ether;
-    uint256 totalSupply = 100; // TODO Should total supply be mutable ?
+    uint256 mintPrice = 1 ether;
+
+    uint256 maxSupply = 100; // TODO Should max supply be mutable ?
+
+    Counters.Counter circulatingSupply;
     Counters.Counter mintId;
 
     //TODO: make a constructor with address for mintSplitter ecc
@@ -35,7 +38,7 @@ contract Dao is Ownable {
 
     function setPrice(uint256 newPrice) public onlyOwner {
         require(newPrice > 0);
-        price = newPrice;
+        mintPrice = newPrice;
     }
 
     function claimAllRewards() public {
@@ -47,19 +50,17 @@ contract Dao is Ownable {
 
     function mint() public payable {
         require(address(mintSplitter).isContract(), "Splitter is not set correctly");
-        require(mintId.current() < totalSupply, "Can't mint more NFTs than max supply");
-        require(msg.value == price, "Value sent in tx does not match mint price");
+        require(mintId.current() < maxSupply, "Can't mint more NFTs than max supply");
+        require(msg.value == mintPrice, "Value sent in tx does not match mint price");
 
         collection.mint(msg.sender, mintId.current(), "");
         mintId.increment();
+        circulatingSupply.increment();
     }
 
     function burn(uint256 id) public {
         collection.burn(id);
-
-        // After burn transfer the slashed price to the burner
-        (bool sent, bytes memory data) = msg.sender.call{value: 0.5 ether}("");
-        require(sent, "Failed to send Ether after burn");
+        circulatingSupply.decrement();
     }
 
     // TODO find a way to distrubte the revenues owned by this address:

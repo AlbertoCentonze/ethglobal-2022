@@ -79,21 +79,29 @@ contract DaoTest is TestWithHelpers {
         vm.stopPrank();
     }
 
-    // function testBurnSupply() public {
-    //     vm.startPrank(RANDOM);
+    function testBurnSupply() public {
+        vm.startPrank(RANDOM);
 
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
+        assertEq(collection.balanceOf(RANDOM), 0);
 
-    //     dao.mint{value: 1 ether}();
-    //     dao.mint{value: 1 ether}();
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 1);
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 1);
 
-    //     dao.burn(1);
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
 
-    //     idBalance = collection.balanceOf(RANDOM, 0);
-    //     assertEq(idBalance, 1);
+        dao.burn(1);
+        assertEq(collection.balanceOf(RANDOM), 1);
 
-    //     vm.stopPrank();
-    // }
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
+
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 3);
+
+        dao.burn(3);
+        assertEq(collection.balanceOf(RANDOM), 2);
+
+        vm.stopPrank();
+    }
 }
