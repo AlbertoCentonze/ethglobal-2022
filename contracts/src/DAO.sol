@@ -50,13 +50,12 @@ contract Dao is Ownable {
         require(mintId.current() < totalSupply, "Can't mint more NFTs than max supply");
         require(msg.value == price, "Value sent in tx does not match mint price");
 
-        collection.mint(msg.sender, mintId.current(), 1, "");
+        collection.mint(msg.sender, mintId.current(), "");
         mintId.increment();
     }
 
     function burn(uint256 id) public {
-        collection.burn(msg.sender, id, 1);
-        mintId.decrement();
+        collection.burn(id);
 
         // After burn transfer the slashed price to the burner
         (bool sent, bytes memory data) = msg.sender.call{value: 0.5 ether}("");
