@@ -22,7 +22,7 @@ contract DaoTest is TestWithHelpers {
         collection = new Shirtless();
 
         // Gives the dao control on the NFT collection
-        collection.transferOwnership(address(dao));
+        collection.setOwner(address(dao));
         dao.setCollection(address(collection));
 
         setUpSplitter();
@@ -53,60 +53,54 @@ contract DaoTest is TestWithHelpers {
         dao.mint{value: 1.5 ether}();
     }
 
-    function mintUpToId(uint256 maxId) public {
+    function mintUpToId(uint256 maxId) public {}
+
+    function testMintWholeSupply() public {
         vm.startPrank(RANDOM);
-        for (uint256 id = 0; id < maxId; id++) {
-            uint256 idBalance = collection.balanceOf(RANDOM, id);
-            assertEq(idBalance, 0);
+        for (uint256 id = 0; id < 100; id++) {
+            uint256 idBalance = collection.balanceOf(RANDOM);
+            assertEq(idBalance, id);
             dao.mint{value: 1 ether}();
-            idBalance = collection.balanceOf(RANDOM, id);
-            assertEq(idBalance, 1);
+            idBalance = collection.balanceOf(RANDOM);
+            assertEq(idBalance, id + 1);
         }
         vm.stopPrank();
     }
 
-    function testMintWholeSupply() public {
-        mintUpToId(100);
+    function testCannotMintMoreThanMaxSupply() public {
+        vm.startPrank(RANDOM);
+        for (uint256 id = 0; id < 101; id++) {
+            uint256 idBalance = collection.balanceOf(RANDOM);
+            if (id > 99) {
+                vm.expectRevert(bytes("Can't mint more NFTs than max supply"));
+            }
+            dao.mint{value: 1 ether}();
+        }
+        vm.stopPrank();
     }
 
-    function testFailMintMoreThanMaxSupply() public {
-        mintUpToId(101);
-    }
-
-    function testFailMintMoreThanMaxSupplyBuzz(uint256 idBiggerThanSupply) public {
-        vm.assume(idBiggerThanSupply > 100);
-        mintUpToId(idBiggerThanSupply);
-    }
-
-    // function testBurnSupply() public {
-    //     vm.startPrank(RANDOM);
-
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
-
-    //     dao.mint{value: 1 ether}();
-    //     dao.mint{value: 1 ether}();
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 1);
-
-    //     dao.burn(1);
-    // 			assertEq(collection.balanceOf(RANDOM, 1), 0);
-
-    //     idBalance = collection.balanceOf(RANDOM, 0);
-    //     assertEq(idBalance, 1);
-
-    //     vm.stopPrank();
-    // }
-
-    function testBurnTransfer() public {
-        vm.deal(RANDOM, 2 ether);
+    function testBurnSupply() public {
         vm.startPrank(RANDOM);
 
+        assertEq(collection.balanceOf(RANDOM), 0);
+
         dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 1);
+
         dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
 
         dao.burn(1);
+        assertEq(collection.balanceOf(RANDOM), 1);
 
-        uint256 ethBalance = RANDOM.balance;
-        assertEq(ethBalance, 0.5 ether);
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
+
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 3);
+
+        dao.burn(3);
+        assertEq(collection.balanceOf(RANDOM), 2);
 
         vm.stopPrank();
     }
