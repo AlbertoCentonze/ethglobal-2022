@@ -96,19 +96,4 @@ contract DaoTest is TestWithHelpers {
 
     //     vm.stopPrank();
     // }
-
-    function testBurnTransfer() public {
-        vm.deal(RANDOM, 2 ether);
-        vm.startPrank(RANDOM);
-
-        dao.mint{value: 1 ether}();
-        dao.mint{value: 1 ether}();
-
-        dao.burn(1);
-
-        uint256 ethBalance = RANDOM.balance;
-        assertEq(ethBalance, 0.5 ether);
-
-        vm.stopPrank();
-    }
 }
