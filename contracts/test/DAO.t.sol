@@ -53,8 +53,6 @@ contract DaoTest is TestWithHelpers {
         dao.mint{value: 1.5 ether}();
     }
 
-    function mintUpToId(uint256 maxId) public {}
-
     function testMintWholeSupply() public {
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < 100; id++) {
@@ -70,7 +68,6 @@ contract DaoTest is TestWithHelpers {
     function testCannotMintMoreThanMaxSupply() public {
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < 101; id++) {
-            uint256 idBalance = collection.balanceOf(RANDOM);
             if (id > 99) {
                 vm.expectRevert(bytes("Can't mint more NFTs than max supply"));
             }
