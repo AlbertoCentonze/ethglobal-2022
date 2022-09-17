@@ -6,7 +6,7 @@ import "@forge-std/console.sol";
 import "./TestWithHelpers.sol";
 import "../src/Shirtless.sol";
 import "../src/DAO.sol";
-import "@openzeppelin/finance/PaymentSplitter.sol";
+import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
 contract DaoTest is TestWithHelpers {
     address[] payees;

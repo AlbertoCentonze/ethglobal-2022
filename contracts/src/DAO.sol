@@ -3,11 +3,11 @@ pragma solidity ^0.8.13;
 
 import "./IVault.sol";
 import "./Shirtless.sol";
-import "@openzeppelin/interfaces/IERC1155.sol";
-import "@openzeppelin/access/Ownable.sol";
-import "@openzeppelin/finance/PaymentSplitter.sol";
-import "@openzeppelin/utils/Counters.sol";
-import "@openzeppelin/utils/Address.sol";
+import "@openzeppelin/contracts/interfaces/IERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 import "@forge-std/console.sol";
 
 contract Dao is Ownable {
