@@ -4,9 +4,10 @@ pragma solidity ^0.8.13;
 import "@forge-std/Test.sol";
 
 abstract contract MaticTest is Test {
-    function setUp() public {
-        string MATIC_RPC_URL = vm.envString("MATIC_RPC_URL");
-        uint256 maticFork = vm.createFork(MATIC_RPC_URL);
-        assertEq(vm.activeFork(), maticFork);
+    uint256 maticFork;
+
+    function activateFork() public {
+        string memory MATIC_RPC_URL = vm.envString("MATIC_RPC_URL");
+        maticFork = vm.createSelectFork(MATIC_RPC_URL);
     }
 }
