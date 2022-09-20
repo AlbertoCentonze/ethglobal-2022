@@ -10,17 +10,15 @@ import {
     SuperTokenFactory,
     SuperfluidFrameworkDeployer
 } from "@superfluid-finance/utils/SuperfluidFrameworkDeployer.sol";
-import {
-    ERC1820RegistryCompiled
-} from "@superfluid-finance/libs/ERC1820RegistryCompiled.sol";
+import {ERC1820RegistryCompiled} from "@superfluid-finance/libs/ERC1820RegistryCompiled.sol";
 import {CFAv1Library} from "@superfluid-finance/apps/CFAv1Library.sol";
 import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
+import {ISuperfluidToken} from "@superfluid-finance/interfaces/superfluid/ISuperfluidToken.sol";
 
 /// @title Superfluid Framework
 /// @author jtriley.eth
 /// @notice This is NOT for deploying public nets, but rather only for tesing envs
 contract SuperfluidTester is Test {
-
     /// @dev Everything you need from framework is in it. See `README.md` for more.
     SuperfluidFrameworkDeployer.Framework internal sf;
 
