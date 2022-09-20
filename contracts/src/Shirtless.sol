@@ -6,7 +6,7 @@ import "@solmate/auth/Owned.sol";
 
 // TODO Yes, shirtless is just a placeholder name
 /**
- * ERC1155
+ * ERC721
  */
 contract Shirtless is ERC721, Owned {
     constructor() ERC721("Shirtless", "STL") Owned(msg.sender) {
