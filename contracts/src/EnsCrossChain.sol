@@ -3,7 +3,8 @@ pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
 
-contract EnsCrossChain is owned{
+contract EnsCrossChain {
+/*
     address public ensRegistrar;
     //TODO: edit the functions arguments / the ensRegistrar's functions' selectors 
     bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(uint256)"));
@@ -97,4 +98,5 @@ contract EnsCrossChain is owned{
 
         connext.xcall(xcallArgs);
     }
+		*/
 }

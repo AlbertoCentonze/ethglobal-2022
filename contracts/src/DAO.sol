@@ -44,7 +44,7 @@ contract Dao is Ownable {
     function claimAllRewards() public {
         // TODO this is totally a placeholder
         for (uint256 index = 0; index < vaults.length; index++) {
-            vaults[index].claim(address(this));
+            // vaults[index].claim(address(this));
         }
     }
 
@@ -62,7 +62,7 @@ contract Dao is Ownable {
         require(collection.ownerOf(id) == msg.sender, "NOT_OWNER");
         collection.burn(id);
         circulatingSupply.decrement();
-        withdrawBurnerValue(msg.sender);
+        // withdrawBurnerValue(msg.sender);
     }
 
     // TODO find a way to distrubte the revenues owned by this address:

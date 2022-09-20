@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.0;
 
 import "./IVault.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-//import aave contracts
-import "@aave/IPool.sol";
-//import "aave/misc/L2Encoder.sol";
+import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
+import "@aave/interfaces/IPool.sol";
 
 contract AaveVault is IVault, Ownable {
     //constant addresses
@@ -22,15 +20,18 @@ contract AaveVault is IVault, Ownable {
 
     uint8 public slashingPercentange;
 
-    constructor (address _underlyingToken, address _aToken, uint8 _slashingPercentange) {//, address _L2EncoderAdd) {
+    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange) {
+        //, address _L2EncoderAdd) {
         underlyingToken = _underlyingToken;
         aToken = _aToken;
         slashingPercentange = _slashingPercentange;
     }
 
+    function withdraw(uint256 amount) public {}
+
     function deposit(uint256 amount) external {
         IERC20(underlyingToken).transferFrom(address(this), msg.sender, amount);
-        totalDeposited += amount;
+        // totalDeposited += amount;
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
     }
 
@@ -41,8 +42,8 @@ contract AaveVault is IVault, Ownable {
     }
 
     function claimInterest(address recepient) public onlyOwner {
-        amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
-        IPool(aavePool).withdraw(underlyingToken, amount, recepient);
+        // amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        // IPool(aavePool).withdraw(underlyingToken, amount, recepient);
     }
 
     //function that let you withdraw (half of an NFT value)
@@ -51,9 +52,9 @@ contract AaveVault is IVault, Ownable {
         withdraw(burnerValue(), recipient);
     }
 
-    function burnerValue() public view returns (uint256 withdrawAmount){
-        uint256 circulatingSupply = Counters.current(owner.circulatingSupply());
-        uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
+    function burnerValue() public view returns (uint256 withdrawAmount) {
+        // WTF uint256 circulatingSupply = Counters.current(owner.circulatingSupply());
+        // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
     //TODO: rebalance function depending on the health factor (cross-chain)

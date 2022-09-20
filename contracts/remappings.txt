@@ -3,4 +3,4 @@
 @openzeppelin/=lib/openzeppelin-contracts/
 @solmate/=lib/solmate/src/
 @superfluid-finance/=lib/protocol-monorepo/packages/ethereum-contracts/contracts/
-@aave/=lib/aave/
+@aave/=lib/aave-v3-core/contracts/
