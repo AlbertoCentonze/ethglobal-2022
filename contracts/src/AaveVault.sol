@@ -57,6 +57,19 @@ contract AaveVault is IVault, Ownable {
         // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
+    function totalAssets() public view returns (uint256) {
+
+    }
+
+    function asset() public view returns (address) {
+        return underlyingToken;
+    }
+
+    function totalAssets() public view returns (uint256) {
+        return underlyingToken.balanceOf(address(this));
+    }
+ 
+
     //TODO: rebalance function depending on the health factor (cross-chain)
 
     //TODO: share per NFT ?
