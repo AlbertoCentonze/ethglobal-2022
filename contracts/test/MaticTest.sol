@@ -6,8 +6,8 @@ import "@forge-std/Test.sol";
 abstract contract MaticTest is Test {
     uint256 maticFork;
 
-    function activateFork() public {
-        string memory MATIC_RPC_URL = vm.envString("MATIC_RPC_URL");
-        maticFork = vm.createSelectFork(MATIC_RPC_URL);
+    function activateFork(uint256 block_number) public {
+        string memory MATIC_RPC_URL = vm.rpcUrl("matic");
+        maticFork = vm.createSelectFork(MATIC_RPC_URL, block_number);
     }
 }

@@ -21,7 +21,6 @@ contract AaveVault is IVault, Ownable {
     uint8 public slashingPercentange;
 
     constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange) {
-        //, address _L2EncoderAdd) {
         underlyingToken = _underlyingToken;
         aToken = _aToken;
         slashingPercentange = _slashingPercentange;
@@ -30,7 +29,8 @@ contract AaveVault is IVault, Ownable {
     function withdraw(uint256 amount) public {}
 
     function deposit(uint256 amount) external {
-        IERC20(underlyingToken).transferFrom(address(this), msg.sender, amount);
+        IERC20(underlyingToken).approve(address(this), amount);
+        IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
         // totalDeposited += amount;
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
     }
@@ -57,18 +57,14 @@ contract AaveVault is IVault, Ownable {
         // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
-    function totalAssets() public view returns (uint256) {
-
-    }
 
     function asset() public view returns (address) {
         return underlyingToken;
     }
 
     function totalAssets() public view returns (uint256) {
-        return underlyingToken.balanceOf(address(this));
+        // return underlyingToken.balanceOf(address(this));
     }
- 
 
     //TODO: rebalance function depending on the health factor (cross-chain)
 

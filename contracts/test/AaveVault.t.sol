@@ -5,34 +5,36 @@ import "@forge-std/Test.sol";
 import "@forge-std/console.sol";
 import "./TestWithHelpers.sol";
 import "../src/AaveVault.sol";
+import "./MaticTest.sol";
 
 //Those tests need to be executed on Polygon
-contract aaveVaultTest is TestWithHelpers {
-/*
-    function setUp() public {
-        // Deploy the AaveVault contract
-        PolUSDCAddr = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
-        aPolUSDCAddr = 0x625E7708f30cA75bfd92586e17077590C60eb4cD; //aave V3
-        //give eth to the DEPLOYER
-        vm.hoax(DEPLOYER, 1001 ether);
-        aaveVault = new AaveVault(PolUSDCAddr, aPolUSDCAddr);
-        vm.stopPrank();
+contract aaveVaultTest is TestWithHelpers, MaticTest {
+    address RICH_GUY = 0xF977814e90dA44bFA03b6295A0616a897441aceC;
+    address polUsdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
+    address aPolUsdc = 0x625E7708f30cA75bfd92586e17077590C60eb4cD;
+    AaveVault aaveVault;
 
-        // Gives ETH to RANDOM user address to be used in tests
-        vm.deal(RANDOM, 1001 ether);
+    function setUp() public {
+        activateFork(33353315);
+        // Deploy the AaveVault contract
+        //give eth to the DEPLOYER
+        aaveVault = new AaveVault(polUsdc, aPolUsdc, 50);
+        vm.prank(RICH_GUY);
+        IERC20(polUsdc).transfer(RANDOM, 1000000000);
     }
 
-    function depositTest(uint256 amount) public {
-        // Gives USDC to RANDOM user address to be used in tests
-        /*vm.deal(PolUSDCAddr, RANDOM, amount ether);
+    function testDeposit() public {
+        uint256 amount = 50;
+        console.log(IERC20(polUsdc).balanceOf(RANDOM));
         vm.startPrank(RANDOM);
         aaveVault.deposit(amount);
         vm.stopPrank();
         //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
-        assertEq(IERC20(PolUSDCAddr).balanceOf(RANDOM), 0);
-        assertEq(IERC20(aPolUSDCAddr).balanceOf(address(aaveVault)));
+        // assertEq(IERC20(PolUSDCAddr).balanceOf(RANDOM), 0);
+        // assertEq(IERC20(aPolUSDCAddr).balanceOf(address(aaveVault)));
     }
 
+    /*
     function withdrawTest(uint256 amount) public {
         // Gives USDC to RANDOM user address to be used in tests
         /* vm.deal(PolUSDCAddr, RANDOM, amount ether); 

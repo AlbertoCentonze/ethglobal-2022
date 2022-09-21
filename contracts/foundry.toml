@@ -4,3 +4,8 @@ out = 'out'
 libs = ['lib']
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+[rpc_endpoints]
+mainnet = "https://rpc.ankr.com/eth"
+arbitrum = "https://rpc.ankr.com/arbitrum"
+matic = "https://rpc.ankr.com/polygon"
