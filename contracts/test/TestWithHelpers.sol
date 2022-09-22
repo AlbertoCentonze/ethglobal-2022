@@ -7,7 +7,7 @@ import "@forge-std/Test.sol";
  * Helper class with some functions and variables to simplify tests
  */
 abstract contract TestWithHelpers is Test {
-    address internal DEV_FUND = makeAddr('DEV_FUND');
-    address internal RANDOM = makeAddr('RANDOM');
-    address internal DEPLOYER = makeAddr('DEPLOYER');
+    address internal DEV_FUND = makeAddr("DEV_FUND");
+    address internal RANDOM = makeAddr("RANDOM");
+    address internal DEPLOYER = makeAddr("DEPLOYER");
 }

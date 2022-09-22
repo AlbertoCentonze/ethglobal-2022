@@ -23,14 +23,16 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.deal(RANDOM, 10 ether);
         deal(polWeth, RANDOM, 10 ether);
         //IERC20(polWeth).transfer(RANDOM, 10 ether);
-        console.log("RANDOM possess " ,IERC20(polWeth).balanceOf(RANDOM) ," polWETH");
+        console.log("RANDOM possess ", IERC20(polWeth).balanceOf(RANDOM), " polWETH");
     }
 
     function testDeposit(uint256 amount) public {
-        amount = amount*10000e18;
+        vm.assume(amount > 0);
+        require(amount > 0);
+        amount = amount;
         //initial RANDOM's balance of polWETH
         uint256 initBalance = IERC20(polWeth).balanceOf(RANDOM);
-        vm.startPrank(RANDOM);//RANDOM should possess 10 polWETH and 10 MATIC
+        vm.startPrank(RANDOM); //RANDOM should possess 10 polWETH and 10 MATIC
         IERC20(polWeth).approve(address(aaveVault), amount);
         //IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
         aaveVault.deposit(amount);
@@ -40,11 +42,10 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), amount);
     }
 
-
     function withdrawTest(uint256 amount) public {
         // Gives USDC to RANDOM user address to be used in tests
-        amount = amount*10000e18;
-        //gives RANDOM, amount of aPolWeth 
+        amount = amount * 10000e18;
+        //gives RANDOM, amount of aPolWeth
         deal(aPolWeth, RANDOM, amount);
         //let RANDOM deposit amount of polWeth
         vm.startPrank(RANDOM);
@@ -53,7 +54,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
         vm.startPrank(DEPLOYER);
         uint256 initVaultBalance = IERC20(aPolWeth).balanceOf(address(aaveVault));
-        console.log("initial vault balance is " , initVaultBalance);
+        console.log("initial vault balance is ", initVaultBalance);
         //let the deployer withdraw what has been deposited
         aaveVault.withdraw(amount);
         //check if vault balance = init - amount
@@ -72,7 +73,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
             assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), initVaultBalance - amount);
             assertEq(IERC20(aPolWeth).balanceOf(DEPLOYER), amount);
         }*/
-        
+
         vm.stopPrank();
     }
     /*
