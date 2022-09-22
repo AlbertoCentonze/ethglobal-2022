@@ -10,14 +10,10 @@ import "./MaticTest.sol";
 //Those tests need to be executed on Polygon
 contract aaveVaultTest is TestWithHelpers, MaticTest {
     address RICH_GUY = 0xF977814e90dA44bFA03b6295A0616a897441aceC;
-    address polUsdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
-    address aPolUsdc = 0x625E7708f30cA75bfd92586e17077590C60eb4cD;
     AaveVault aaveVault;
 
     function setUp() public {
         activateFork(33353315);
-        // Deploy the AaveVault contract
-        //give eth to the DEPLOYER
         aaveVault = new AaveVault(polUsdc, aPolUsdc, 50);
         vm.prank(RICH_GUY);
         IERC20(polUsdc).transfer(RANDOM, 1000000000);
