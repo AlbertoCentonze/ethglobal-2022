@@ -14,15 +14,17 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
     function setUp() public {
         activateFork(33424436);
+        //create the new vault
         aaveVault = new AaveVault(polWeth, aPolWeth, 50);
+        //give rich guy some WETH
         vm.prank(RICH_GUY);
-        IERC20(polWeth).transfer(RANDOM, 10);
-        console.log(IERC20(polWeth).balanceOf(RANDOM));
+        IERC20(polWeth).transfer(RANDOM, 10 ether);//TODO: try with vm.deal
+        console.log("RANDOM possess " + IERC20(polWeth).balanceOf(RANDOM) + " polWETH");
     }
 
     function testDeposit() public {
         uint256 amount = 5;
-        vm.startPrank(RANDOM);
+        vm.startPrank(RANDOM);//RANDOM should possess 10 polWETH
         IERC20(polWeth).approve(address(aaveVault), amount);
         IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
         aaveVault.deposit(amount);
