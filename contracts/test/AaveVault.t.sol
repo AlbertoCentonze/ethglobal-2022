@@ -10,7 +10,6 @@ import "./MaticTest.sol";
 //Those tests need to be executed on Polygon
 contract aaveVaultTest is TestWithHelpers, MaticTest {
     address RICH_GUY = 0x064917552B3121ED11321ecD8908fC79d00BcbB7;
-    // 0x2093b4281990a568c9d588b8bce3bfd7a1557ebd
     AaveVault aaveVault;
 
     function setUp() public {
@@ -28,7 +27,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.startPrank(RANDOM);
         console.log("RANDOM berore deposit = ");
         console.log(IERC20(polWeth).balanceOf(RANDOM));
-
+				IERC20(polWeth).approve(address(aaveVault), amount);
         aaveVault.deposit(amount);
         //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
         assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);

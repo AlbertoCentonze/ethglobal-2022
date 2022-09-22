@@ -7,9 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-
 contract AaveVault is IVault, Ownable {
     //constant addresses
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
@@ -46,7 +43,6 @@ contract AaveVault is IVault, Ownable {
 
         console.log("RANDOM inside deposit after approve = ");
         console.log(IERC20(underlyingToken).allowance(msg.sender, address(this)));
-
 
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
         // // totalDeposited += amount;
