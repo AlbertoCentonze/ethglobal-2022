@@ -9,56 +9,73 @@ import "./MaticTest.sol";
 
 //Those tests need to be executed on Polygon
 contract aaveVaultTest is TestWithHelpers, MaticTest {
-    address RICH_GUY = 0x064917552B3121ED11321ecD8908fC79d00BcbB7;
     AaveVault aaveVault;
 
     function setUp() public {
         activateFork(33424436);
+
         //create the new vault
+        vm.deal(RANDOM, 10 ether);
+        vm.startPrank(DEPLOYER);
         aaveVault = new AaveVault(polWeth, aPolWeth, 50);
-        //give rich guy some WETH
-        vm.prank(RICH_GUY);
-        IERC20(polWeth).transfer(RANDOM, 10 ether);//TODO: try with vm.deal
-        console.log("RANDOM possess " + IERC20(polWeth).balanceOf(RANDOM) + " polWETH");
-    }
-
-    function testDeposit() public {
-        uint256 amount = 5;
-        vm.startPrank(RANDOM);//RANDOM should possess 10 polWETH
-        IERC20(polWeth).approve(address(aaveVault), amount);
-        IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
-        aaveVault.deposit(amount);
-        //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
-        assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);
         vm.stopPrank();
-        // assertEq(IERC20(aPolUSDCAddr).balanceOf(address(aaveVault)));
+        //give rich guy some WETH
+        vm.deal(RANDOM, 10 ether);
+        deal(polWeth, RANDOM, 10 ether);
+        //IERC20(polWeth).transfer(RANDOM, 10 ether);
+        console.log("RANDOM possess " ,IERC20(polWeth).balanceOf(RANDOM) ," polWETH");
     }
 
-    /*
+    function testDeposit(uint256 amount) public {
+        amount = amount*10000e18;
+        //initial RANDOM's balance of polWETH
+        uint256 initBalance = IERC20(polWeth).balanceOf(RANDOM);
+        vm.startPrank(RANDOM);//RANDOM should possess 10 polWETH and 10 MATIC
+        IERC20(polWeth).approve(address(aaveVault), amount);
+        //IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
+        aaveVault.deposit(amount);
+        vm.stopPrank();
+        //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
+        assertEq(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount);
+        assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), amount);
+    }
+
+
     function withdrawTest(uint256 amount) public {
         // Gives USDC to RANDOM user address to be used in tests
-        /* vm.deal(PolUSDCAddr, RANDOM, amount ether); 
+        amount = amount*10000e18;
+        //gives RANDOM, amount of aPolWeth 
+        deal(aPolWeth, RANDOM, amount);
+        //let RANDOM deposit amount of polWeth
         vm.startPrank(RANDOM);
         aaveVault.deposit(amount);
         vm.stopPrank();
 
         vm.startPrank(DEPLOYER);
-        uint256 initVaultBalance = IERC20(aPolUSDCAddr).balanceOf(address(aaveVault));
-        if (amount > IERC20(aPolUSDCAddr).balanceOf(address(aaveVault))){
-            vm.expectRevert(); //can't worthdraw more than the total balance
+        uint256 initVaultBalance = IERC20(aPolWeth).balanceOf(address(aaveVault));
+        console.log("initial vault balance is " , initVaultBalance);
+        //let the deployer withdraw what has been deposited
+        aaveVault.withdraw(amount);
+        //check if vault balance = init - amount
+        assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), initVaultBalance - amount);
+        //check if DEPLOYER balance is equal to amount
+        assertEq(IERC20(aPolWeth).balanceOf(DEPLOYER), amount);
+        /*//check if the vault is already "filled"
+        if (amount > IERC20(aPolWeth).balanceOf(address(aaveVault))){
+            vm.expectRevert(); //can't withdraw more than the total balance
             aaveVault.witdraw(amount);
         }
         else {
             aaveVault.witdraw(amount);
             //check if vault balance = init - amount
             //check if DEPLOYER balance
-            assertEq(IERC20(aPolUSDCAddr).balanceOf(address(aaveVault)), initVaultBalance - amount);
-            assertEq(IERC20(PolUSDCAddr).balanceOf(DEPLOYER), amount);
-        }
+            assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), initVaultBalance - amount);
+            assertEq(IERC20(aPolWeth).balanceOf(DEPLOYER), amount);
+        }*/
         
         vm.stopPrank();
     }
-
+    /*
     //claim test
     function claimTest(address recepient, uint256 usdcAmount, uint256 claimableAmount) public {
         //state is reset so need to deposit

@@ -32,19 +32,11 @@ contract AaveVault is IVault, Ownable {
     function withdraw(uint256 amount) public {}
 
     function deposit(uint256 amount) external {
-        console.log("print1");
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
-        console.log("print2");
-        // // totalDeposited += amount;
-        // IERC20(underlyingToken).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
-        // console.log(ad)
-        console.log("aave pool and address=");
-        console.log(aavePool);
-        console.log(address(this));
-        IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
-        console.log("print3");
-
         totalUnderlyingDeposited += amount;
+        IERC20(underlyingToken).approve(address(aavePool), amount);
+        IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
+        console.log(IERC20(aToken).balanceOf(address(this)));
     }
 
     function withdraw(uint256 amount, address recepient) public onlyOwner {
