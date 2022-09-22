@@ -14,8 +14,6 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
     function setUp() public {
         activateFork(33424436);
-        console.log("rich guy = ");
-        console.log(IERC20(polWeth).balanceOf(RICH_GUY));
         aaveVault = new AaveVault(polWeth, aPolWeth, 50);
         vm.prank(RICH_GUY);
         IERC20(polWeth).transfer(RANDOM, 10);
@@ -25,9 +23,8 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
     function testDeposit() public {
         uint256 amount = 5;
         vm.startPrank(RANDOM);
-        console.log("RANDOM berore deposit = ");
-        console.log(IERC20(polWeth).balanceOf(RANDOM));
-				IERC20(polWeth).approve(address(aaveVault), amount);
+        IERC20(polWeth).approve(address(aaveVault), amount);
+        IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
         aaveVault.deposit(amount);
         //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
         assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);

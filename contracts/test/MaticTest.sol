@@ -12,6 +12,7 @@ abstract contract MaticTest is Test {
     address polWeth = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
     address aPolWeth = 0x28424507fefb6f7f8E9D3860F56504E4e5f5f390;
 
+    address polPool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
     // polygon adress for Weth and aWeth
 
     function activateFork(uint256 block_number) public {

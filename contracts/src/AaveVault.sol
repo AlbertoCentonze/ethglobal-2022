@@ -11,7 +11,7 @@ contract AaveVault is IVault, Ownable {
     //constant addresses
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
     //Aave contract address
-    address public aavePool; //0x794a61358D6845594F94dc1DB02A252b5b4814aD = Polygon Aave Pool
+    address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD; //0x794a61358D6845594F94dc1DB02A252b5b4814aD = Polygon Aave Pool
     address public aToken; //0x625E7708f30cA75bfd92586e17077590C60eb4cD = aPolUSDC
     //address public L2EncoderAdd; // helper contract
     //TODO: add Shirtless contract address
@@ -32,21 +32,17 @@ contract AaveVault is IVault, Ownable {
     function withdraw(uint256 amount) public {}
 
     function deposit(uint256 amount) external {
-        console.log("RANDOM inside deposit = ");
-        console.log(IERC20(underlyingToken).balanceOf(msg.sender));
-
-        console.log("msg sender =");
-        console.log(msg.sender);
-
-        console.log("approve = ");
-        console.log(IERC20(underlyingToken).approve(address(this), amount));
-
-        console.log("RANDOM inside deposit after approve = ");
-        console.log(IERC20(underlyingToken).allowance(msg.sender, address(this)));
-
+        console.log("print1");
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
+        console.log("print2");
         // // totalDeposited += amount;
+        // IERC20(underlyingToken).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
+        // console.log(ad)
+        console.log("aave pool and address=");
+        console.log(aavePool);
+        console.log(address(this));
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
+        console.log("print3");
 
         totalUnderlyingDeposited += amount;
     }
