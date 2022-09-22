@@ -5,6 +5,10 @@ import "./IVault.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
 import "@aave/interfaces/IPool.sol";
+import "@forge-std/console.sol";
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 
 contract AaveVault is IVault, Ownable {
     //constant addresses
@@ -31,9 +35,21 @@ contract AaveVault is IVault, Ownable {
     function withdraw(uint256 amount) public {}
 
     function deposit(uint256 amount) external {
-        IERC20(underlyingToken).approve(address(this), amount);
+        console.log("RANDOM inside deposit = ");
+        console.log(IERC20(underlyingToken).balanceOf(msg.sender));
+
+        console.log("msg sender =");
+        console.log(msg.sender);
+
+        console.log("approve = ");
+        console.log(IERC20(underlyingToken).approve(address(this), amount));
+
+        console.log("RANDOM inside deposit after approve = ");
+        console.log(IERC20(underlyingToken).allowance(msg.sender, address(this)));
+
+
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
-        // totalDeposited += amount;
+        // // totalDeposited += amount;
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
 
         totalUnderlyingDeposited += amount;

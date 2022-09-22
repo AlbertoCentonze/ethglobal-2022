@@ -9,24 +9,30 @@ import "./MaticTest.sol";
 
 //Those tests need to be executed on Polygon
 contract aaveVaultTest is TestWithHelpers, MaticTest {
-    address RICH_GUY = 0xF977814e90dA44bFA03b6295A0616a897441aceC;
+    address RICH_GUY = 0x064917552B3121ED11321ecD8908fC79d00BcbB7;
+    // 0x2093b4281990a568c9d588b8bce3bfd7a1557ebd
     AaveVault aaveVault;
 
     function setUp() public {
-        activateFork(33353315);
-        aaveVault = new AaveVault(polUsdc, aPolUsdc, 50);
+        activateFork(33424436);
+        console.log("rich guy = ");
+        console.log(IERC20(polWeth).balanceOf(RICH_GUY));
+        aaveVault = new AaveVault(polWeth, aPolWeth, 50);
         vm.prank(RICH_GUY);
-        IERC20(polUsdc).transfer(RANDOM, 1000000000);
+        IERC20(polWeth).transfer(RANDOM, 10);
+        console.log(IERC20(polWeth).balanceOf(RANDOM));
     }
 
     function testDeposit() public {
-        uint256 amount = 50;
-        console.log(IERC20(polUsdc).balanceOf(RANDOM));
+        uint256 amount = 5;
         vm.startPrank(RANDOM);
+        console.log("RANDOM berore deposit = ");
+        console.log(IERC20(polWeth).balanceOf(RANDOM));
+
         aaveVault.deposit(amount);
-        vm.stopPrank();
         //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
-        // assertEq(IERC20(PolUSDCAddr).balanceOf(RANDOM), 0);
+        assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);
+        vm.stopPrank();
         // assertEq(IERC20(aPolUSDCAddr).balanceOf(address(aaveVault)));
     }
 
