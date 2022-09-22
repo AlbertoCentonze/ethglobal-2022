@@ -16,7 +16,9 @@ contract AaveVault is IVault, Ownable {
     //TODO: add Shirtless contract address
     address public collection;
 
-    uint256 public totalUnderlyingDeposited;
+    // uint256 public underlyingAsset = 0;
+
+    uint256 public totalUnderlyingDeposited = 0;
 
     uint8 public slashingPercentange;
 
@@ -33,6 +35,8 @@ contract AaveVault is IVault, Ownable {
         IERC20(underlyingToken).transferFrom(address(this), msg.sender, amount);
         // totalDeposited += amount;
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
+
+        totalUnderlyingDeposited += amount;
     }
 
     function withdraw(uint256 amount, address recepient) public onlyOwner {
@@ -55,10 +59,6 @@ contract AaveVault is IVault, Ownable {
     function burnerValue() public view returns (uint256 withdrawAmount) {
         // WTF uint256 circulatingSupply = Counters.current(owner.circulatingSupply());
         // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
-    }
-
-    function totalAssets() public view returns (uint256) {
-
     }
 
     function asset() public view returns (address) {
