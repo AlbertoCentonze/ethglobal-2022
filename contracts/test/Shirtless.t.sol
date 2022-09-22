@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "./SuperfluidTester.sol";
+import "./MaticTest.sol";
 import "./TestWithHelpers.sol";
 
-contract ShirtlessTest is SuperfluidTester, TestWithHelpers {
+contract ShirtlessTest is MaticSuperfluidTest, TestWithHelpers {
     IDAv1Library.InitData internal _idaLib;
 
-    ISuperfluidToken ETHx;
+    ISuperfluidToken ETHx = ISuperfluidToken(polETHx);
 
-    constructor() SuperfluidTester(address(1)) {}
+    constructor() {}
 
     /*
     function setUp() public {
