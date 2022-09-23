@@ -101,4 +101,6 @@ contract DaoTest is TestWithHelpers {
 
         vm.stopPrank();
     }
+
+    //TODO: test the burning mechanism using the aaveVault to verify the slashingPercentage
 }

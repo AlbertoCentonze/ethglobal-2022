@@ -29,25 +29,28 @@ contract AaveVault is IVault, Ownable {
         slashingPercentange = _slashingPercentange;
     }
 
-    function withdraw(uint256 amount) public {}
-
     function deposit(uint256 amount) external {
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
         totalUnderlyingDeposited += amount;
         IERC20(underlyingToken).approve(address(aavePool), amount);
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
-        console.log("Balance of the aaveVault in aToken", IERC20(aToken).balanceOf(address(this)));
+        console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
     }
 
     function withdraw(uint256 amount, address recepient) public onlyOwner {
         totalUnderlyingDeposited -= amount;
         // approve aToken for aavePool?
+        console.log("I'm trying to withdraw");
+        //TODO: IERC20(aToken).approve(aavePool, amount);
         IPool(aavePool).withdraw(underlyingToken, amount, recepient);
+        console.log("Balance of the aaveVault in aToken after withdrawing is", IERC20(aToken).balanceOf(address(this)));
+        console.log("Someone is withdrawing ", amount, "of underlyingToken");
     }
 
     function claimInterest(address recepient) public onlyOwner {
-        // amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
-        // IPool(aavePool).withdraw(underlyingToken, amount, recepient);
+        uint256 amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        IERC20(aToken).approve(aavePool, amount);
+        IPool(aavePool).withdraw(underlyingToken, amount, recepient);
     }
 
     //function that let you withdraw (half of an NFT value)
