@@ -36,7 +36,10 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.stopPrank();
         //check if RANDOM's polWETH balance = 0 and if Vault's aUSDC balance is >= amount and if totalDepositedUnderlying == amount
         assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);
-        assertEq(true, IERC20(aPolWeth).balanceOf(address(aaveVault)) >= amount);
+        console.log("aaveVault balance is ", IERC20(aPolWeth).balanceOf(address(aaveVault)));
+        console.log("amount = ", amount);
+        assertApproxEqAbs(IERC20(aPolWeth).balanceOf(address(aaveVault)) - amount, 0, 1);
+        //assertEq(true, IERC20(aPolWeth).balanceOf(address(aaveVault)) >= amount);
         assertEq(aaveVault.totalUnderlyingDeposited(), amount);
     }
 
@@ -73,25 +76,12 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         console.log("second test passed");
         //check if DEPLOYER balance is equal to amount
         assertEq(IERC20(polWeth).balanceOf(DEPLOYER), amount);
-        /*//check if the vault is already "filled"
-        if (amount > IERC20(aPolWeth).balanceOf(address(aaveVault))){
-            vm.expectRevert(); //can't withdraw more than the total balance
-            aaveVault.witdraw(amount);
-        }
-        else {
-            aaveVault.witdraw(amount);
-            //check if vault balance = init - amount
-            //check if DEPLOYER balance
-            assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), initVaultBalance - amount);
-            assertEq(IERC20(aPolWeth).balanceOf(DEPLOYER), amount);
-        }*/
-
         vm.stopPrank();
     }
     
     //claim test
     function testClaimInterest(address recepient, uint128 amount, uint128 claimableAmount) public {
-        vm.assume(amount > 0);
+        vm.assume(amount > 0 && claimableAmount > 0);
         //state is reset so need to deposit
         // Gives polWETH to RANDOM user address to be used in tests
         deal(polWeth, RANDOM, amount); 
@@ -103,15 +93,15 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.stopPrank();
         //get initial vault aPolUSDC balance
         uint256 initVaultBalance = IERC20(aPolWeth).balanceOf(address(aaveVault));
-        console.log("aaveVault balance = ", initVaultBalance);
+        console.log("aaveVault balance before interests = ", initVaultBalance);
         //add aPolUSDC in the vault by minting "amount"
         //TODO: check if mint or just replace balance with claimableAmount
         //deal(aPolWeth, address(aaveVault), claimableAmount);
 
         address aPolWethHolder = 0x3A5bd1E37b099aE3386D13947b6a90d97675e5e3;
-        vm.assume(amount <= IERC20(aPolWeth).balanceOf(aPolWethHolder));
+        vm.assume(claimableAmount <= IERC20(aPolWeth).balanceOf(aPolWethHolder));
         vm.startPrank(aPolWethHolder);
-        IERC20(aPolWeth).transfer(address(aaveVault), amount);
+        IERC20(aPolWeth).transfer(address(aaveVault), claimableAmount);
         vm.stopPrank();
 
         //claim and send to recipient

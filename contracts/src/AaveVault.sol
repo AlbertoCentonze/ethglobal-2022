@@ -49,6 +49,7 @@ contract AaveVault is IVault, Ownable {
 
     function claimInterest(address recepient) public onlyOwner {
         uint256 amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        console.log("amount of interest = ", amount);
         IERC20(aToken).approve(aavePool, amount);
         IPool(aavePool).withdraw(underlyingToken, amount, recepient);
     }
