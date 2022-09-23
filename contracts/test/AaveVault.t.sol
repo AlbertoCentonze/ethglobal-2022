@@ -30,7 +30,6 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         require(amount > 0);
         console.log("amount is ", amount);
         //initial RANDOM's balance of polWETH
-        //uint256 initBalance = IERC20(polWeth).balanceOf(RANDOM);
         vm.startPrank(RANDOM); //RANDOM should possess 10 polWETH and 10 MATIC
         IERC20(polWeth).approve(address(aaveVault), amount);
         aaveVault.deposit(amount);
@@ -39,9 +38,6 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);
         assertEq(true, IERC20(aPolWeth).balanceOf(address(aaveVault)) >= amount);
         assertEq(aaveVault.totalUnderlyingDeposited(), amount);
-        //assertApproxEqAbs(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount, 1);
-        //assertEq(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount);
-        //assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), amount);
     }
 
     function withdrawTest(uint256 amount) public {
