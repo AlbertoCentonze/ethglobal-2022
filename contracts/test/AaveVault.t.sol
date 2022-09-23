@@ -80,7 +80,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
     }
     
     //claim test
-    function testClaimInterest(address recepient, uint128 amount, uint128 claimableAmount) public {
+    function testClaimInterest(address recipient, uint128 amount, uint128 claimableAmount) public {
         vm.assume(amount > 0 && claimableAmount > 0);
         //state is reset so need to deposit
         // Gives polWETH to RANDOM user address to be used in tests
@@ -106,7 +106,6 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
         //claim and send to recipient
         vm.startPrank(DEPLOYER);
-        address recipient = makeAddr('recipient');
         console.log("Claiming interests");
         aaveVault.claimInterest(recipient);
 
@@ -114,33 +113,36 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         console.log("RECIPIENT balance of polWETH = ", IERC20(polWeth).balanceOf(recipient), "; Claimable amount = ", claimableAmount);
         assertApproxEqAbs(IERC20(polWeth).balanceOf(recipient), claimableAmount, 1);
     }
+    
     /*
     //multiple deposit and a withdraw
-    function multipleDepositAndWithdraw(address[] addresses, uint256[] balances, uint256 withdrawals) public {
-        vm.assume(addresses.length == balances.lenth);
+    function testMultipleDepositAndWithdraw(address[] calldata addresses, uint256[] calldata balances, uint256 withdrawals) public {
+        vm.assume(addresses.length == balances.length);
         uint256 totalAmount = 0;
         //deposits
         for (uint256 i = 0; i< addresses.length; i++){
             vm.startPrank(addresses[i]);
             //TODO: mint them a random "amount" of USDC;
+            uint256 amount = balances[i];
             aaveVault.deposit(amount);
             totalAmount += amount;
             vm.stopPrank();
         }
         //try a claim and assertEq(recipient balance, 0)
         vm.startPrank(DEPLOYER);
-        address recipient = makeAddr('recipient');
-        aaveVault.claim(recipient);
-        assertEq(IERC20(PolUSDCAddr).balanceOf(recipient), 0);
+        address RECIPIENT = makeAddr('recipient');
+        aaveVault.claimInterest(RECIPIENT);
+        assertEq(IERC20(polWeth).balanceOf(RECIPIENT), 0);
         for (uint256 i = 0; i<withdrawals; i++){
             //withdrawal
-            // aaveVault.withdraw(totalAmount/withdrawals);
-            //assertEq(recipient balance, totalAmount/withdrawals)
-            // assertApproxEqAbs(IERC20(PolUSDCAddr).balanceOf(recipient), totalAmount * (i +1) / withdrawals, 0,1 ether);
+            aaveVault.withdraw(totalAmount/withdrawals, RECIPIENT);
+            //TODO: assertEq(recipient balance, totalAmount/withdrawals);
+            assertApproxEqAbs(IERC20(polWeth).balanceOf(RECIPIENT), totalAmount * (i +1) / withdrawals, 0.1 ether);
         }
         vm.stopPrank();
-    }
+    }*/
 
+    /*
     //multiple deposit, time goes by and claim
     function multipleDepositAndWithdraw(address[] addresses, uint256 withdrawals, uint256 claimableAmount) public {
         uint256 totalAmount = 0;
@@ -165,6 +167,5 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
             // assertApproxEqAbs(IERC20(PolUSDCAddr).balanceOf(recipient), totalAmount * (i +1) / withdrawals, 0,1 ether);
         }
         vm.stopPrank();
-    }
-	*/
+    }*/
 }
