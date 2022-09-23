@@ -67,8 +67,8 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
         assertApproxEqAbs(amount, initVaultBalance, 1);
         console.log("first test passed");
-        //let the deployer withdraw what has been deposited
-        aaveVault.withdraw(amount, DEPLOYER);
+        //let the deployer withdraw what is in the vault
+        aaveVault.withdraw(initVaultBalance, DEPLOYER);
         //check if vault balance = init - amount
         console.log("checking if vaultBalance == 0 after withdrawing");
         console.log("finalVaultBalance = ", IERC20(aPolWeth).balanceOf(address(aaveVault)), " and initialVaultBalance - amount = ", initVaultBalance - amount);
@@ -81,7 +81,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
     
     //claim test
     function testClaimInterest(address recipient, uint128 amount, uint128 claimableAmount) public {
-        vm.assume(amount > 0 && claimableAmount > 0);
+        vm.assume(amount > 0 && claimableAmount > 0 && recipient != 0x0000000000000000000000000000000000000000);
         //state is reset so need to deposit
         // Gives polWETH to RANDOM user address to be used in tests
         deal(polWeth, RANDOM, amount); 
@@ -94,10 +94,8 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         //get initial vault aPolUSDC balance
         uint256 initVaultBalance = IERC20(aPolWeth).balanceOf(address(aaveVault));
         console.log("aaveVault balance before interests = ", initVaultBalance);
-        //add aPolUSDC in the vault by minting "amount"
-        //TODO: check if mint or just replace balance with claimableAmount
-        //deal(aPolWeth, address(aaveVault), claimableAmount);
 
+        //add aPolUSDC in the vault by minting "amount"
         address aPolWethHolder = 0x3A5bd1E37b099aE3386D13947b6a90d97675e5e3;
         vm.assume(claimableAmount <= IERC20(aPolWeth).balanceOf(aPolWethHolder));
         vm.startPrank(aPolWethHolder);
@@ -143,7 +141,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
     }*/
 
     /*
-    //multiple deposit, time goes by and claim
+    //multiple deposits and withdrawals + interests claim
     function multipleDepositAndWithdraw(address[] addresses, uint256 withdrawals, uint256 claimableAmount) public {
         uint256 totalAmount = 0;
         //deposits
