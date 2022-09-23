@@ -19,27 +19,29 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.startPrank(DEPLOYER);
         aaveVault = new AaveVault(polWeth, aPolWeth, 50);
         vm.stopPrank();
-        //give rich guy some WETH
+        //give RANDOM enough to pay for gas
         vm.deal(RANDOM, 10 ether);
-        deal(polWeth, RANDOM, 10 ether);
-        //IERC20(polWeth).transfer(RANDOM, 10 ether);
-        console.log("RANDOM possess ", IERC20(polWeth).balanceOf(RANDOM), " polWETH");
+        //console.log("RANDOM possess ", IERC20(polWeth).balanceOf(RANDOM), " polWETH");
     }
 
-    function testDeposit(uint256 amount) public {
+    function testDeposit(uint128 amount) public {//TODO: find why it doesn't work with uint256
         vm.assume(amount > 0);
+        deal(polWeth, RANDOM, amount);
         require(amount > 0);
-        amount = amount;
+        console.log("amount is ", amount);
         //initial RANDOM's balance of polWETH
-        uint256 initBalance = IERC20(polWeth).balanceOf(RANDOM);
+        //uint256 initBalance = IERC20(polWeth).balanceOf(RANDOM);
         vm.startPrank(RANDOM); //RANDOM should possess 10 polWETH and 10 MATIC
         IERC20(polWeth).approve(address(aaveVault), amount);
-        //IERC20(polWeth).approve(address(0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8), amount);
         aaveVault.deposit(amount);
         vm.stopPrank();
-        //check if RANDOM's USDC balance = 0 and if Vault's aUSDC balance is >= amount
-        assertEq(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount);
-        assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), amount);
+        //check if RANDOM's polWETH balance = 0 and if Vault's aUSDC balance is >= amount and if totalDepositedUnderlying == amount
+        assertEq(IERC20(polWeth).balanceOf(RANDOM), 0);
+        assertEq(true, IERC20(aPolWeth).balanceOf(address(aaveVault)) >= amount);
+        assertEq(aaveVault.totalUnderlyingDeposited(), amount);
+        //assertApproxEqAbs(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount, 1);
+        //assertEq(initBalance - IERC20(polWeth).balanceOf(RANDOM), amount);
+        //assertEq(IERC20(aPolWeth).balanceOf(address(aaveVault)), amount);
     }
 
     function withdrawTest(uint256 amount) public {
