@@ -89,7 +89,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         //aaveVault.deposit(amount);
         console.log("RANDOM has deposited ", amount, " of polWETH");
         //TODO deploy a DAO and mint some NFT to see if we get (amount/totalSupply*0.5)
-        dao.mint{value: 1 ether}();
+        /*dao.mint{value: 1 ether}();
         assertEq(collection.balanceOf(RANDOM), 1);
 
         dao.mint{value: 1 ether}();
@@ -100,7 +100,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
         dao.mint{value: 1 ether}();
         assertEq(collection.balanceOf(RANDOM), 2);
-        vm.stopPrank();
+        vm.stopPrank();*/
     }
     
     //claim test
