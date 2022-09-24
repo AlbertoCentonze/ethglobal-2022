@@ -14,7 +14,7 @@ contract AaveVault is IVault, Ownable {
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
     //Aave contract address
     address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
-    address public aToken; 
+    address public aToken;
 
     uint256 public totalUnderlyingDeposited;
 
@@ -26,7 +26,7 @@ contract AaveVault is IVault, Ownable {
         slashingPercentange = _slashingPercentange;
     }
 
-    function getPendingRewards() public view returns(uint256){
+    function getPendingRewards() public view returns (uint256) {
         return IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
     }
 

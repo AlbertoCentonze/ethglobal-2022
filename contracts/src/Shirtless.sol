@@ -5,6 +5,8 @@ import "@solmate/tokens/ERC721.sol";
 import "@solmate/auth/Owned.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import {Superfluid, InstantDistributionAgreementV1} from "@superfluid-finance/utils/SuperfluidFrameworkDeployer.sol";
+import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
 
 // Shirtless is just a placeholder name
 /**
@@ -12,11 +14,26 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  */
 contract Shirtless is ERC721, Owned {
     using Counters for Counters.Counter;
+    using IDAv1Library for IDAv1Library.InitData;
+
+    IDAv1Library.InitData internal idaLib;
+    Superfluid host;
 
     Counters.Counter public circulatingSupply;
     Counters.Counter public mintId;
 
-    constructor() ERC721("Shirtless", "STL") Owned(msg.sender) {
+    constructor(address superfluidHost) ERC721("Shirtless", "STL") Owned(msg.sender) {
+        host = Superfluid(superfluidHost);
+        idaLib = IDAv1Library.InitData(
+            host,
+            InstantDistributionAgreementV1(
+                address(
+                    host.getAgreementClass(
+                        keccak256("org.superfluid-finance.agreements.InstantDistributionAgreement.v1")
+                    )
+                )
+            )
+        );
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {

@@ -4,6 +4,24 @@ pragma solidity ^0.8.13;
 import "./MaticTest.sol";
 import "./TestWithHelpers.sol";
 
+import {IInstantDistributionAgreementV1} from
+    "@superfluid-finance/interfaces/agreements/IInstantDistributionAgreementV1.sol";
+
+import {ISuperfluidToken} from "@superfluid-finance/interfaces/superfluid/ISuperfluidToken.sol";
+import {Test} from "@forge-std/Test.sol";
+import {
+    Superfluid,
+    ConstantFlowAgreementV1,
+    InstantDistributionAgreementV1,
+    SuperTokenFactory,
+    SuperfluidFrameworkDeployer
+} from "@superfluid-finance/utils/SuperfluidFrameworkDeployer.sol";
+import {ERC1820RegistryCompiled} from "@superfluid-finance/libs/ERC1820RegistryCompiled.sol";
+import {CFAv1Library} from "@superfluid-finance/apps/CFAv1Library.sol";
+import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
+import {ISuperfluidToken} from "@superfluid-finance/interfaces/superfluid/ISuperfluidToken.sol";
+import {ISuperToken} from "@superfluid-finance/interfaces/superfluid/ISuperToken.sol";
+
 contract ShirtlessTest is MaticTest, TestWithHelpers {
     ISuperToken ETHx;
     uint32 INDEX_ID = 0;
@@ -18,7 +36,7 @@ contract ShirtlessTest is MaticTest, TestWithHelpers {
     Superfluid host = Superfluid(maticSuperfluidHost);
 
     function setUp() public {
-        activateFork();
+        activateFork(33424436);
         ETHx = ISuperToken(polETHx);
 
         idaLib = IDAv1Library.InitData(

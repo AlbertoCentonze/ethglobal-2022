@@ -22,17 +22,21 @@ contract NftManager is Ownable {
     address rewarder;
     EnsCrossChain ensCrossChain;
 
-    constructor (uint256 _mintPrice, uint256 _maxSupply ,address _wMatic, address _rewarder /*, address _ensCrossChain*/) {
+    constructor(
+        uint256 _mintPrice,
+        uint256 _maxSupply,
+        address _wMatic,
+        address _rewarder /*, address _ensCrossChain*/
+    ) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
         rewarder = _rewarder;
         aaveVault = new AaveVault(_wMatic, 50);
-        collection = new Shirtless();
         // ensCrossChain = _ensCrossChain;
     }
 
-    function circulatingSupply() public view returns(uint256) {
+    function circulatingSupply() public view returns (uint256) {
         return collection.circulatingSupply();
     }
 
@@ -64,7 +68,7 @@ contract NftManager is Ownable {
     function mint() public payable {
         require(collection.mintId() < maxSupply, "Can't mint more NFTs than max supply");
         require(msg.value == mintPrice, "Value sent in tx does not match mint price");
-        IWMATIC(wMatic).deposit{value : msg.value}();
+        IWMATIC(wMatic).deposit{value: msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
         // ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());

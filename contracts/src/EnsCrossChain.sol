@@ -7,7 +7,7 @@ import "@solmate/auth/Owned.sol";
 // import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 
 contract EnsCrossChain {
-	/*
+/*
     address public ensManager;
     //TODO: edit the functions arguments / the ensManager's functions' selectors 
     bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(address,uint256)"));
