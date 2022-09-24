@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import { daoContractAddress } from '../config.js'
+import { daoContractAddress, vaultContractAddress } from '../config.js'
 import { ethers } from 'ethers'
 import axios from 'axios'
 
 // import Loader from 'react-loader-spinner';
 
 import DAO from '../../contracts/out/DAO.sol/Dao.json'
+import Vault from '../../contracts/out/AaveVault.sol/AaveVault.json'
+
 
 const mint = () => {
 	const [mintedNFT, setMintedNFT] = useState(null)
@@ -14,6 +16,7 @@ const mint = () => {
 	const [txError, setTxError] = useState(null)
 	const [currentAccount, setCurrentAccount] = useState('')
 	const [correctNetwork, setCorrectNetwork] = useState(false)
+	const [pendingRewards, setPendingReward] = useState(0)
 
 	// Checks if wallet is connected
 	const checkIfWalletIsConnected = async () => {
@@ -84,6 +87,9 @@ const mint = () => {
 	useEffect(() => {
 		checkIfWalletIsConnected()
 		checkCorrectNetwork()
+		async () => {
+			getPendingRewards()
+		}
 	}, [])
 
 	// Creates transaction to mint NFT on clicking Mint Character button
@@ -125,6 +131,20 @@ const mint = () => {
 		}
 	}
 
+	const getPendingRewards = async () => {
+		const provider = new ethers.providers.Web3Provider(ethereum)
+		const signer = provider.getSigner()
+		console.log('I got the signers' + signer)
+		const VaultContract = new ethers.Contract(
+			vaultContractAddress,
+			Vault.abi,
+			signer
+		)
+
+		let pendingRewards = await VaultContract.getPendingRewards()
+		setPendingReward(pendingRewards)
+	}
+
 	// Gets the minted NFT data
 	// const getMintedNFT = async (tokenId) => {
 	// 	try {
@@ -154,12 +174,16 @@ const mint = () => {
 	// 	}
 	// }
 
+	// {pendingRewards} 
 	return (
 		<div className='flex flex-col items-center pt-32 bg-[#f3f6f4] text-[#6a50aa] min-h-screen'>
 			<div className='trasition hover:rotate-180 hover:scale-105 transition duration-500 ease-in-out'>
 			</div>
 			<h2 className='text-3xl font-bold mb-20 mt-12'>
 				Mint your NFT!
+			</h2>
+			<h2 className='text-3xl font-bold mb-20 mt-12'>
+				Claimable rewards = {pendingRewards} 
 			</h2>
 			{currentAccount === '' ? (
 				<button
@@ -171,7 +195,7 @@ const mint = () => {
 				) : correctNetwork ? (
 				<button
 				className='text-2xl font-bold py-3 px-12 bg-[#f1c232] rounded-lg mb-10 hover:scale-105 transition duration-500 ease-in-out'
-				onClick={mintCharacter}
+				// onClick={mintCharacter}
 				>
 				Mint Character
 				</button>
