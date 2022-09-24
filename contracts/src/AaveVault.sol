@@ -2,8 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./IVault.sol";
+import "./DAO.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
 
@@ -23,10 +25,11 @@ contract AaveVault is IVault, Ownable {
 
     uint8 public slashingPercentange;
 
-    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange) {
+    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange, address _collection) {
         underlyingToken = _underlyingToken;
         aToken = _aToken;
         slashingPercentange = _slashingPercentange;
+        collection = _collection;
     }
 
     function deposit(uint256 amount) external {
@@ -48,7 +51,9 @@ contract AaveVault is IVault, Ownable {
     }
 
     function claimInterest(address recepient) public onlyOwner {
-        uint256 amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        uint256 aTokenBalance = IERC20(aToken).balanceOf(address(this));
+        require(aTokenBalance > totalUnderlyingDeposited);
+        uint256 amount = aTokenBalance - totalUnderlyingDeposited;
         console.log("amount of interest = ", amount);
         IERC20(aToken).approve(aavePool, amount);
         IPool(aavePool).withdraw(underlyingToken, amount, recepient);
@@ -61,8 +66,8 @@ contract AaveVault is IVault, Ownable {
     }
 
     function burnerValue() public view returns (uint256 withdrawAmount) {
-        // WTF uint256 circulatingSupply = Counters.current(owner.circulatingSupply());
-        // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
+        uint256 circulatingSupply = Dao(owner()).circulatingSupply();
+        withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
     function asset() public view returns (address) {

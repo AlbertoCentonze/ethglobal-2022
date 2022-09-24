@@ -17,7 +17,8 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         //create the new vault
         vm.deal(RANDOM, 10 ether);
         vm.startPrank(DEPLOYER);
-        aaveVault = new AaveVault(polWeth, aPolWeth, 50);
+        address COLLECTION = makeAddr('collection');
+        aaveVault = new AaveVault(polWeth, aPolWeth, 50, COLLECTION);
         vm.stopPrank();
         //give RANDOM enough to pay for gas
         vm.deal(RANDOM, 10 ether);
@@ -59,7 +60,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
 
         //let the owner of aaveVault withdraw the deposit
         vm.startPrank(DEPLOYER);
-        //TODO: check if the withdrawn funds == to amount
+
         uint256 initVaultBalance = IERC20(aPolWeth).balanceOf(address(aaveVault));
         console.log("initial vault balance is ", initVaultBalance);
         console.log("Checking if the amount deposited by RANDOM == initVaultBalance");
@@ -76,6 +77,29 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         console.log("second test passed");
         //check if DEPLOYER balance is equal to amount
         assertEq(IERC20(polWeth).balanceOf(DEPLOYER), amount);
+        vm.stopPrank();
+    }
+
+    //test burner value
+    function testBurnerWithdraw(uint256 amount) public {
+        deal(polWeth, RANDOM, amount); 
+        vm.startPrank(RANDOM);
+        //RANDOM is depositing amount polWeth
+        //IERC20(polWeth).approve(address(aaveVault), amount);
+        //aaveVault.deposit(amount);
+        console.log("RANDOM has deposited ", amount, " of polWETH");
+        //TODO deploy a DAO and mint some NFT to see if we get (amount/totalSupply*0.5)
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 1);
+
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
+
+        dao.burn(1);
+        assertEq(collection.balanceOf(RANDOM), 1);
+
+        dao.mint{value: 1 ether}();
+        assertEq(collection.balanceOf(RANDOM), 2);
         vm.stopPrank();
     }
     
@@ -112,7 +136,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         assertApproxEqAbs(IERC20(polWeth).balanceOf(recipient), claimableAmount, 1);
     }
     
-    /*
+    
     //multiple deposit and a withdraw
     function testMultipleDepositAndWithdraw(address[] calldata addresses, uint256[] calldata balances, uint256 withdrawals) public {
         vm.assume(addresses.length == balances.length);
@@ -129,16 +153,20 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         //try a claim and assertEq(recipient balance, 0)
         vm.startPrank(DEPLOYER);
         address RECIPIENT = makeAddr('recipient');
+        console.log("trying to claim interests");
         aaveVault.claimInterest(RECIPIENT);
+        console.log("checking that the recipient doesn't get any interest");
+        console.log("RECIPIENT balance = ", IERC20(polWeth).balanceOf(RECIPIENT));
         assertEq(IERC20(polWeth).balanceOf(RECIPIENT), 0);
         for (uint256 i = 0; i<withdrawals; i++){
             //withdrawal
             aaveVault.withdraw(totalAmount/withdrawals, RECIPIENT);
-            //TODO: assertEq(recipient balance, totalAmount/withdrawals);
+            //assertEq(recipient balance, totalAmount/withdrawals);
+            console.log("asserting that RECIPIENT balance : ", IERC20(polWeth).balanceOf(RECIPIENT), " equal to currentlyWithdrawnAmount: ", totalAmount * (i +1) / withdrawals);
             assertApproxEqAbs(IERC20(polWeth).balanceOf(RECIPIENT), totalAmount * (i +1) / withdrawals, 0.1 ether);
         }
         vm.stopPrank();
-    }*/
+    }
 
     /*
     //multiple deposits and withdrawals + interests claim

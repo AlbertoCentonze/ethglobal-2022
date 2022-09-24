@@ -56,6 +56,7 @@ contract Dao is Ownable {
         collection.mint(msg.sender, mintId.current(), "");
         mintId.increment();
         circulatingSupply.increment();
+        
     }
 
     function burn(uint256 id) public {
