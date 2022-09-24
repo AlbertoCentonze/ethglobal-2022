@@ -4,8 +4,6 @@ pragma solidity ^0.8.13;
 import "./MaticTest.sol";
 import "./TestWithHelpers.sol";
 
-import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
-
 contract ShirtlessTest is MaticTest, TestWithHelpers {
     ISuperToken ETHx;
     uint32 INDEX_ID = 0;
