@@ -14,7 +14,7 @@ contract Shirtless is ERC721, Owned {
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-        return "we don't have a url yet"; //TODO
+        return "https://c.tenor.com/x8v1oNUOmg4AAAAC/rickroll-roll.gif"; //TODO
     }
 
     function mint(address to, uint256 id, bytes memory data) public onlyOwner {
