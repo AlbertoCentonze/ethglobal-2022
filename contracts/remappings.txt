@@ -2,4 +2,4 @@
 @forge-std/=lib/forge-std/src/
 @openzeppelin/=lib/openzeppelin-contracts/
 @solmate/=lib/solmate/src/
-@superfluid-finance/=lib/protocol-monorepo/packages/ethereum-contracts/contracts/
+@superfluid-finance/=lib/node_modules/@superfluid-finance/ethereum-contracts/contracts/
