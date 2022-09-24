@@ -4,12 +4,11 @@ pragma solidity ^0.8.0;
 import "./IVault.sol";
 import "./NftManager.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
 
-//TODO: change every polWETH by wMATIC
 contract AaveVault is IVault, Ownable {
     //constant addresses
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
