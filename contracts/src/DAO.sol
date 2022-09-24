@@ -21,10 +21,10 @@ contract Dao is Ownable {
 
     uint256 maxSupply = 100; // TODO Should max supply be mutable ?
 
-    Counters.Counter circulatingSupply;
+    Counters.Counter public circulatingSupply;
     Counters.Counter mintId;
 
-    //TODO: make a constructor with address for mintSplitter ecc
+    //TODO: make a constructor with address for mintSplitter ecc and deploy an AaveVault
 
     function setCollection(address collectionAddress) public onlyOwner {
         collection = Shirtless(collectionAddress);
@@ -44,7 +44,7 @@ contract Dao is Ownable {
     function claimAllRewards() public {
         // TODO this is totally a placeholder
         for (uint256 index = 0; index < vaults.length; index++) {
-            vaults[index].claim(address(this));
+            // vaults[index].claim(address(this));
         }
     }
 
@@ -59,8 +59,10 @@ contract Dao is Ownable {
     }
 
     function burn(uint256 id) public {
+        require(collection.ownerOf(id) == msg.sender, "NOT_OWNER");
         collection.burn(id);
         circulatingSupply.decrement();
+        // withdrawBurnerValue(msg.sender);
     }
 
     // TODO find a way to distrubte the revenues owned by this address:

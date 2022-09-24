@@ -7,3 +7,9 @@
 [submodule "contracts/lib/protocol-monorepo"]
 	path = contracts/lib/protocol-monorepo
 	url = https://github.com/superfluid-finance/protocol-monorepo
+[submodule "contracts/lib/subdomain-registrar"]
+	path = contracts/lib/subdomain-registrar
+	url = https://github.com/ensdomains/subdomain-registrar
+[submodule "contracts/lib/aave-v3-core"]
+	path = contracts/lib/aave-v3-core
+	url = https://github.com/aave/aave-v3-core
