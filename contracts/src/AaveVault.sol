@@ -2,47 +2,37 @@
 pragma solidity ^0.8.0;
 
 import "./IVault.sol";
-import "./DAO.sol";
+import "./NftManager.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
-import "./IWETHGateway.sol";
 
+//TODO: change every polWETH by wMATIC
 contract AaveVault is IVault, Ownable {
     //constant addresses
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
     //Aave contract address
-    address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD; //0x794a61358D6845594F94dc1DB02A252b5b4814aD = Polygon Aave Pool
-    address public aToken; //0x625E7708f30cA75bfd92586e17077590C60eb4cD = aPolUSDC
-    address public wethGateway;
-    //address public L2EncoderAdd; // helper contract
-    //TODO: add Shirtless contract address
-    address public collection;
-
-    // uint256 public underlyingAsset = 0;
+    address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
+    address public aToken; 
 
     uint256 public totalUnderlyingDeposited = 0;
 
     uint8 public slashingPercentange;
 
-    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange, address _collection, address _wethGateway) {
+    constructor(address _underlyingToken, uint8 _slashingPercentange) {
         underlyingToken = _underlyingToken;
-        aToken = _aToken;
+        //aToken = _aToken;
         slashingPercentange = _slashingPercentange;
-        collection = _collection;
-        wethGateway = _wethGateway;
     }
 
-    function deposit() external payable {
-        // msg.value,
-        //IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
-        totalUnderlyingDeposited += msg.value;
-        //IERC20(underlyingToken).approve(address(aavePool), amount);
+    function deposit(uint256 amount) external {
+        IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
+        totalUnderlyingDeposited += amount;
+        IERC20(underlyingToken).approve(address(aavePool), amount);
 
-        //IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
-        WETHGateway(wethGateway).depositETH{value : msg.value}(aavePool, address(this), 0);
+        IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
         console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
     }
 
@@ -71,8 +61,8 @@ contract AaveVault is IVault, Ownable {
         withdraw(burnerValue(), recipient);
     }
 
-    function burnerValue() public view returns (uint256 withdrawAmount) {
-        uint256 circulatingSupply = Dao(owner()).circulatingSupply();
+    function burnerValue() public returns (uint256 withdrawAmount) {
+        uint256 circulatingSupply = NftManager(owner()).circulatingSupply();
         withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
@@ -83,10 +73,4 @@ contract AaveVault is IVault, Ownable {
     function totalAssets() public view returns (uint256) {
         // return underlyingToken.balanceOf(address(this));
     }
-
-    //TODO: rebalance function depending on the health factor (cross-chain)
-
-    //TODO: share per NFT ?
-
-    //TODO: claimable total yield / claimable yield per NFT ?
 }

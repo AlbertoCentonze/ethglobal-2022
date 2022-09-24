@@ -18,7 +18,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         vm.deal(RANDOM, 10 ether);
         vm.startPrank(DEPLOYER);
         address COLLECTION = makeAddr('collection');
-        aaveVault = new AaveVault(polWeth, aPolWeth, 50, COLLECTION);
+        aaveVault = new AaveVault(polWeth, 50);
         vm.stopPrank();
         //give RANDOM enough to pay for gas
         vm.deal(RANDOM, 10 ether);

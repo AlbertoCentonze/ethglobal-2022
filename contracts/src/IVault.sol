@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 interface IVault {
-    function deposit(uint256 amount) external payable; //TODO nonReentrant (not usefull if we don't handle ETH or ERC-1155)
+    function deposit(uint256 amount) external; //TODO nonReentrant (not usefull if we don't handle ETH or ERC-1155)
     function withdraw(uint256 amount, address recipient) external; //TODO nonReentrant (not usefull if we don't handle ETH or ERC-1155)
     function claimInterest(address recipient) external;
 
