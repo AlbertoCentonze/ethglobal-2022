@@ -19,6 +19,6 @@ abstract contract MaticTest is Test {
 
     function activateFork(uint256 block_number) public {
         string memory MATIC_RPC_URL = vm.rpcUrl("matic");
-        maticFork = vm.createSelectFork(MATIC_RPC_URL, block_number);
+        maticFork = vm.createSelectFork(MATIC_RPC_URL);
     }
 }

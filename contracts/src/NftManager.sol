@@ -59,13 +59,15 @@ contract NftManager is Ownable {
         aaveVault.claimInterest(rewarder);
     }
 
+    // function mint() public {
     function mint() public payable {
         require(collection.mintId() < maxSupply, "Can't mint more NFTs than max supply");
         require(msg.value == mintPrice, "Value sent in tx does not match mint price");
         IWMATIC(wMatic).deposit{value : msg.value}();
-        aaveVault.deposit(msg.value);
+        // aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
         // ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
+    
     }
 
     function burn(uint256 id) public {

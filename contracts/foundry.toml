@@ -8,7 +8,7 @@ libs = ['lib']
 [rpc_endpoints]
 mainnet = "https://rpc.ankr.com/eth"
 arbitrum = "https://rpc.ankr.com/arbitrum"
-matic = "https://rpc.ankr.com/polygon"
+matic = "https://polygon-rpc.com"
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
 
