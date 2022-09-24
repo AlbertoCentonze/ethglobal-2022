@@ -16,7 +16,7 @@ contract AaveVault is IVault, Ownable {
     address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
     address public aToken; 
 
-    uint256 public totalUnderlyingDeposited = 0;
+    uint256 public totalUnderlyingDeposited;
 
     uint8 public slashingPercentange;
 
@@ -24,6 +24,10 @@ contract AaveVault is IVault, Ownable {
         underlyingToken = _underlyingToken;
         //aToken = _aToken;
         slashingPercentange = _slashingPercentange;
+    }
+
+    function getPendingRewards() public view returns(uint256){
+        IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
     }
 
     function deposit(uint256 amount) external {
