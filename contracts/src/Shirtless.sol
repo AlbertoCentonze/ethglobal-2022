@@ -17,7 +17,6 @@ contract Shirtless is ERC721, Owned {
     Counters.Counter public mintId;
 
     constructor() ERC721("Shirtless", "STL") Owned(msg.sender) {
-        //TODO should we batchmint a certain amount to ourselves?
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
