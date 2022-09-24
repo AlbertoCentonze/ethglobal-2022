@@ -27,7 +27,7 @@ contract AaveVault is IVault, Ownable {
     }
 
     function getPendingRewards() public view returns(uint256){
-        IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        return IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
     }
 
     function deposit(uint256 amount) external {
