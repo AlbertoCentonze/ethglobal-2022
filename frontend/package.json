@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "ethers": "^5.7.1",
     "mime": "^3.0.0",
     "next": "12.2.5",
     "nft.storage": "^7.0.0",
