@@ -51,12 +51,13 @@ contract Dao is Ownable {
     function mint() public payable {
         require(address(mintSplitter).isContract(), "Splitter is not set correctly");
         require(mintId.current() < maxSupply, "Can't mint more NFTs than max supply");
+        //TODO: use only WETH and no MATIC or MATIC and then wMATIC or even stMATIC
         require(msg.value == mintPrice, "Value sent in tx does not match mint price");
 
         collection.mint(msg.sender, mintId.current(), "");
         mintId.increment();
         circulatingSupply.increment();
-        
+
     }
 
     function burn(uint256 id) public {
