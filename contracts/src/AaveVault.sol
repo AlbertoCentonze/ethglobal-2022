@@ -74,6 +74,6 @@ contract AaveVault is IVault, Ownable {
     }
 
     function totalAssets() public view returns (uint256) {
-        // return underlyingToken.balanceOf(address(this));
+        return totalUnderlyingDeposited;
     }
 }
