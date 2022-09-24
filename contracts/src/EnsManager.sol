@@ -1,11 +1,15 @@
 // // SPDX-License-Identifier: UNLICENSED
 // pragma solidity ^0.8.13;
 
-// import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
-// import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
-// import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+//import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+//import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
+//import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+//import "@ens/ENS.sol";
+//TODO: anowble
 
-// contract FIFSRegistrar {
+contract EnsManager {
+	/*
+    address ensAddress;
 
 //     // The address of Source.sol
 //     address public originContract;
@@ -71,8 +75,6 @@
 
 //         if (currentOwner != 0 && currentOwner != msg.sender) throw;
 
-//         ens.setSubnodeOwner(rootNode, subnode, owner);
-//     }
-//     function mintSubDomain()
-// 		*/
-// }
+    //TODO: add the possibility to associate an ardress to the ENS + twitter for example
+		*/
+}

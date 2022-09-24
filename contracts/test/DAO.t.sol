@@ -20,10 +20,12 @@ contract DaoTest is TestWithHelpers, MaticTest {
         address REWARDER = makeAddr('rewarder');
         // Deploy the DAO contract
         dao = new NftManager(1, 10, wMatic, REWARDER);
-
+        collection = new Shirtless();
         // Gives the dao control on the NFT collection
+        vm.deal(RANDOM, 100 ether);
         collection.setOwner(address(dao));
         dao.setCollection(address(collection));
+
     }
 
     function testCannotMintWithNotEnoughMoney() public {
@@ -39,6 +41,7 @@ contract DaoTest is TestWithHelpers, MaticTest {
     function testMintWholeSupply() public {
         vm.startPrank(RANDOM);
         for (uint256 id = 0; id < 100; id++) {
+            console.log("I get to here");
             uint256 idBalance = collection.balanceOf(RANDOM);
             assertEq(idBalance, id);
             dao.mint{value: 1 ether}();
