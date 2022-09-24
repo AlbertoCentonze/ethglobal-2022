@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
+import "./IWETHGateway.sol";
 
 contract AaveVault is IVault, Ownable {
     //constant addresses
@@ -15,6 +16,7 @@ contract AaveVault is IVault, Ownable {
     //Aave contract address
     address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD; //0x794a61358D6845594F94dc1DB02A252b5b4814aD = Polygon Aave Pool
     address public aToken; //0x625E7708f30cA75bfd92586e17077590C60eb4cD = aPolUSDC
+    address public wethGateway;
     //address public L2EncoderAdd; // helper contract
     //TODO: add Shirtless contract address
     address public collection;
@@ -25,11 +27,12 @@ contract AaveVault is IVault, Ownable {
 
     uint8 public slashingPercentange;
 
-    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange, address _collection) {
+    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange, address _collection, address _wethGateway) {
         underlyingToken = _underlyingToken;
         aToken = _aToken;
         slashingPercentange = _slashingPercentange;
         collection = _collection;
+        wethGateway = _wethGateway;
     }
 
     function deposit() external payable {
@@ -39,6 +42,7 @@ contract AaveVault is IVault, Ownable {
         //IERC20(underlyingToken).approve(address(aavePool), amount);
 
         //IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
+        WETHGateway(wethGateway).depositETH{value : msg.value}(aavePool, address(this), 0);
         console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
     }
 
