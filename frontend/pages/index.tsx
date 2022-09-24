@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { nftContractAddress } from '../config.js'
+import { daoContractAddress } from '../config.js'
 import { ethers } from 'ethers'
 import axios from 'axios'
 
 // import Loader from 'react-loader-spinner';
 
-// import NFT from '../utils/knft.json'
+import DAO from '../../contracts/out/DAO.sol/Dao.json'
 
 const mint = () => {
 	const [mintedNFT, setMintedNFT] = useState(null)
@@ -94,17 +94,18 @@ const mint = () => {
 			if (ethereum) {
 				const provider = new ethers.providers.Web3Provider(ethereum)
 				const signer = provider.getSigner()
-				const nftContract = new ethers.Contract(
-					nftContractAddress,
-					NFT.abi,
+        console.log('I got the signers' + signer)
+				const DAOcontract = new ethers.Contract(
+					daoContractAddress,
+					DAO.abi,
 					signer
 				)
 
-				let nftTx = await nftContract.createknft()
-				console.log('Mining....', nftTx.hash)
+				let mintTx = await DAOcontract.mint()
+				console.log('Mining....', mintTx.hash)
 				setMiningStatus(0)
 
-				let tx = await nftTx.wait()
+				let tx = await mintTx.wait()
 				setLoadingState(1)
 				console.log('Mined!', tx)
 				let event = tx.events[0]
@@ -112,10 +113,9 @@ const mint = () => {
 				let tokenId = value.toNumber()
 
 				console.log(
-					`Mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTx.hash}`
+					`Mined with tx hash = ${mintTx.hash}`
 				)
 
-				getMintedNFT(tokenId)
 			} else {
 				console.log("Ethereum object doesn't exist!")
 			}
@@ -171,28 +171,18 @@ const mint = () => {
 				) : correctNetwork ? (
 				<button
 				className='text-2xl font-bold py-3 px-12 bg-[#f1c232] rounded-lg mb-10 hover:scale-105 transition duration-500 ease-in-out'
-				// onClick={mintCharacter}
+				onClick={mintCharacter}
 				>
 				Mint Character
 				</button>
 				) : (
 				<div className='flex flex-col justify-center items-center mb-20 font-bold text-2xl gap-y-3'>
 				<div>----------------------------------------</div>
-				<div>Please connect to the Rinkeby Testnet</div>
+				<div>Please connect to Polygon</div>
 				<div>and reload the page</div>
 				<div>----------------------------------------</div>
 				</div>
 			)}
-			<div className='text-xl font-semibold mb-20 mt-4'>
-				<a
-					href={`https://rinkeby.rarible.com/collection/${nftContractAddress}`}
-					target='_blank'
-				>
-					<span className='hover:underline hover:underline-offset-8 '>
-						View Collection on Rarible
-					</span>
-				</a>
-			</div>
 			{loadingState === 0 ? (
 				miningStatus === 0 ? (
 					txError === null ? (
