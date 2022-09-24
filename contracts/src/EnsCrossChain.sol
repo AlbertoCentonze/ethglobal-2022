@@ -2,11 +2,14 @@
 pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
+import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
+import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 
 contract EnsCrossChain {
-    address public ensRegistrar;
-    //TODO: edit the functions arguments / the ensRegistrar's functions' selectors 
-    bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(uint256)"));
+    address public ensManager;
+    //TODO: edit the functions arguments / the ensManager's functions' selectors 
+    bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(address,uint256)"));
     bytes4 internal burnSelector = bytes4(keccak256("burnSubDomain(uint256)"));
 
     address targetContract;
@@ -23,14 +26,13 @@ contract EnsCrossChain {
         targetContract = _targetContract;
     }
 
-    //setter for the ensRegistrar address
-    function setEnsRegistrar(address newEnsRegistrar) public onlyOwner {
-        ensRegistrar = newEnsRegistrar;
+    //setter for the ensManager address
+    function setEnsManager(address newEnsManager) public onlyOwner {
+        ensManager = newEnsManager;
     }
 
     // This function will call the Registrar to mint the ENS-subdomain in the case a new NFT is minted
     function xMintSubDomain(
-        address to, // the address of the target contract
         address subDomainRecepient, //TODO: maybe not needed / the address receiving the subdomain 
         uint32 nftId //the NFT ID
         //TODO: add an argument of a name (packedString maybe?)
@@ -40,7 +42,7 @@ contract EnsCrossChain {
         bytes memory callData = abi.encodeWithSelector(mintSlector, subDomainRecepient, nftId);
 
         CallParams memory callParams = CallParams({
-        to: ensRegistrar,
+        to: ensManager,
         callData: callData,
         originDomain: originDomain,
         destinationDomain: destinationDomain,
@@ -74,7 +76,7 @@ contract EnsCrossChain {
         bytes memory callData = abi.encodeWithSelector(burnSelector, nftId);
 
         CallParams memory callParams = CallParams({
-        to: ensRegistrar,
+        to: ensManager,
         callData: callData,
         originDomain: originDomain,
         destinationDomain: destinationDomain,

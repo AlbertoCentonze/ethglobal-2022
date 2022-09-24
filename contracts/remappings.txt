@@ -5,3 +5,4 @@
 @superfluid-finance/=lib/protocol-monorepo/packages/ethereum-contracts/contracts/
 @aave/=lib/aave-v3-core/contracts/
 @aave-periphery/=lib/aave-v3-periphery/contracts/
+@ens/=lib/ens/contracts/

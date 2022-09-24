@@ -19,3 +19,9 @@
 [submodule "contracts/lib/aave-v3-periphery"]
 	path = contracts/lib/aave-v3-periphery
 	url = https://github.com/aave/aave-v3-periphery
+[submodule "contracts/lib/nxtp"]
+	path = contracts/lib/nxtp
+	url = https://github.com/connext/nxtp
+[submodule "contracts/lib/ens"]
+	path = contracts/lib/ens
+	url = https://github.com/ensdomains/ens

@@ -4,6 +4,7 @@ pragma solidity ^0.8.10;
 import "./AaveVault.sol";
 import "./Shirtless.sol";
 import "./IWMatic.sol";
+import "./EnsCrossChain.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@forge-std/console.sol";
@@ -19,14 +20,16 @@ contract NftManager is Ownable {
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
     address rewarder;
+    EnsCrossChain ensCrossChain;
 
-    constructor (uint256 _mintPrice, uint256 _maxSupply ,address _wMatic, address _rewarder) {
+    constructor (uint256 _mintPrice, uint256 _maxSupply ,address _wMatic, address _rewarder, address _ensCrossChain) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
         rewarder = _rewarder;
         aaveVault = new AaveVault(_wMatic, 50);
         collection = new Shirtless();
+        ensCrossChain = _ensCrossChain;
     }
 
     function circulatingSupply() public returns(uint256) {
@@ -64,6 +67,7 @@ contract NftManager is Ownable {
         IWMATIC(wMatic).deposit{value : msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
+        ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
     }
 
     function burn(uint256 id) public {

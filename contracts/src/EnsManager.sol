@@ -4,17 +4,22 @@ pragma solidity ^0.8.13;
 import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
 import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
 import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+import "@ens/ENS.sol";
+//TODO: anowble
 
-contract FIFSRegistrar {
+contract EnsManager {
+    address ensAddress;
 
     // The address of Source.sol
     address public originContract;
 
     // The origin Domain ID
-    uint32 public originDomain;
+    uint32 public originDomain; // e.g. from Mumbai (Polygon testnet) (9991)
 
     // The address of the Connext Executor contract
     IExecutor public executor;
+
+    uint32 selfNode;
 
     // A modifier for authenticated function calls.
     // Note: This is an important security consideration. If your target
@@ -34,45 +39,34 @@ contract FIFSRegistrar {
     constructor(
         address _originContract,
         uint32 _originDomain,
-        IConnextHandler _connext
+        IConnextHandler _connext,
+        address _ensAddress //https://docs.ens.domains/ens-deployments
     ) {
         originContract = _originContract;
         originDomain = _originDomain;
         executor = _connext.executor();
+        ensAddress = _ensAddress;
+    }
+
+    function setSelfNode(uint32 _selfNode) public onlyOwner {
+
     }
 
   // Authenticated mint function
   //TODO: change name and args
-    function updateValueAuthenticated(uint256 newValue) 
+    function mintSubDomain(address recipient, uint32 nftId) 
         external onlyExecutor   {
-    //TODO: mint the subdomain linked to the NFT
+        //TODO: mint the subdomain linked to the NFT
+        ENS(ensAddress).setSubnodeRecord(selfNode, nftId, recipient);
     }
 
     // Authenticated burn function
     //TODO: change name and args
-    function updateValueAuthenticated(uint256 newValue) 
+    function burnSubDomain(uint32 newValue) 
         external onlyExecutor 
     {
         //TODO: burn the subdomain linked to the NFT
     }
 
     //TODO: add the possibility to associate an ardress to the ENS + twitter for example
-/*
-    ENS ens;
-    bytes32 rootNode;
-
-    function FIFSRegistrar(address ensAddr, bytes32 node) {
-        ens = ENS(ensAddr);
-        rootNode = node;
-    }
-    function register(bytes32 subnode, address owner) {
-        //var node = sha3(rootNode, subnode);
-        //var currentOwner = ens.owner(node);
-
-        if (currentOwner != 0 && currentOwner != msg.sender) throw;
-
-        ens.setSubnodeOwner(rootNode, subnode, owner);
-    }
-    function mintSubDomain()
-		*/
 }
