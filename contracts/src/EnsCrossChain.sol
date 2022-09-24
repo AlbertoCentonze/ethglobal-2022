@@ -2,11 +2,12 @@
 pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
-import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
-import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
-import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+// import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+// import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
+// import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 
 contract EnsCrossChain {
+	/*
     address public ensManager;
     //TODO: edit the functions arguments / the ensManager's functions' selectors 
     bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(address,uint256)"));
@@ -99,4 +100,5 @@ contract EnsCrossChain {
 
         connext.xcall(xcallArgs);
     }
+		*/
 }
