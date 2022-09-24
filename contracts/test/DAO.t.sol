@@ -5,42 +5,25 @@ import "@forge-std/Test.sol";
 import "@forge-std/console.sol";
 import "./TestWithHelpers.sol";
 import "../src/Shirtless.sol";
-import "../src/DAO.sol";
+import "../src/NftManager.sol";
+import "./MaticTest.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract DaoTest is TestWithHelpers {
+contract DaoTest is TestWithHelpers, MaticTest {
     address[] payees;
     uint256[] shares;
 
-    Dao dao;
+    NftManager dao;
     Shirtless collection;
 
     function setUp() public {
+        address REWARDER = makeAddr('rewarder');
         // Deploy the DAO contract
-        dao = new Dao();
-        // Deploy the NFT collection
-        collection = new Shirtless();
+        dao = new NftManager(1, 10, wMatic, REWARDER);
 
         // Gives the dao control on the NFT collection
         collection.setOwner(address(dao));
         dao.setCollection(address(collection));
-
-        setUpSplitter();
-    }
-
-    function setUpSplitter() public {
-        payees = [DEV_FUND, address(dao)]; // Solidity sucks
-        shares = [9, 1];
-        dao.setMintSplitter(new PaymentSplitter(payees, shares));
-
-        // Gives money to RANDOM user address to be used in tests
-        vm.deal(RANDOM, 1001 ether);
-    }
-
-    function testCannotMintWithoutSplitter() public {
-        dao.setMintSplitter(PaymentSplitter(payable(0)));
-        vm.expectRevert(bytes("Splitter is not set correctly"));
-        dao.mint{value: 1 ether}();
     }
 
     function testCannotMintWithNotEnoughMoney() public {
