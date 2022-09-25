@@ -94,9 +94,5 @@ contract EnsCrossChain is Owned {
 
         connext.xcall(xcallArgs);
     }
-<<<<<<< HEAD
 }
-=======
-		*/
-}
->>>>>>> aave-superfluid
+

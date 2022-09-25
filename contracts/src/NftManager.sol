@@ -28,14 +28,14 @@ contract NftManager is Ownable {
         uint256 _mintPrice,
         uint128 _maxSupply,
         address _wMatic,
-        address _rewarder /*, address _ensCrossChain*/
+        address _rewarder , address _ensCrossChain
     ) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
         rewarder = _rewarder;
         aaveVault = new AaveVault(_wMatic, 50);
-        // ensCrossChain = _ensCrossChain;
+        ensCrossChain = _ensCrossChain;
     }
 
     function circulatingSupply() public view returns (uint256) {

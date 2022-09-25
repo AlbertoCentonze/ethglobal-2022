@@ -14,9 +14,9 @@ import "@solmate/auth/Owned.sol";
 contract MumbaiContractsDeployer is Script {
     address MumbaiWMatic = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
     address MumbaiPoolAddressesProvider = 0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6;
-    IConnextHandler MumbaiConnext = IConnextHandler(0xD9e8b18Db316d7736A3d0386C59CA3332810df3B); //TODO
-    uint32 MumbaiDomain = 9991; //TODO
-    uint32 GoerlyDomain = 1735353714;//TODO
+    IConnextHandler MumbaiConnext = IConnextHandler(0xD9e8b18Db316d7736A3d0386C59CA3332810df3B);
+    uint32 MumbaiDomain = 9991; 
+    uint32 GoerlyDomain = 1735353714;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
