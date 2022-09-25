@@ -53,43 +53,49 @@ contract DaoTest is TestWithHelpers, MaticTest {
         vm.stopPrank();
     }
 
-    // function testCannotMintMoreThanMaxSupply() public {
-    //     vm.startPrank(RANDOM);
-    //     for (uint256 id = 0; id < 11; id++) {
-    //         if (id > 9) {
-    //             vm.expectRevert(bytes("Can't mint more NFTs than max supply"));
-    //         }
-    //         dao.mint{value: 1 ether}();
-    //     }
-    //     vm.stopPrank();
-    // }
-
-    function testBurnSupply() public {
-        
+    function testCannotMintMoreThanMaxSupply() public {
         vm.startPrank(RANDOM);
-
-        assertEq(collection.balanceOf(RANDOM), 0);
-
-        dao.mint{value: 1 ether}();
-        assertEq(collection.balanceOf(RANDOM), 1);
-
-        dao.mint{value: 1 ether}();
-        assertEq(collection.balanceOf(RANDOM), 2);
-
-        dao.burn(1);
-        assertEq(collection.balanceOf(RANDOM), 1);
-
-        dao.mint{value: 1 ether}();
-        assertEq(collection.balanceOf(RANDOM), 2);
-
-        dao.mint{value: 1 ether}();
-        assertEq(collection.balanceOf(RANDOM), 3);
-
-        dao.burn(3);
-        assertEq(collection.balanceOf(RANDOM), 2);
-
+        for (uint256 id = 0; id < 11; id++) {
+            if (id > 9) {
+                vm.expectRevert(bytes("Can't mint more NFTs than max supply"));
+            }
+            dao.mint{value: 1 ether}();
+        }
         vm.stopPrank();
     }
+
+    // function testBurnSupply() public {
+        
+    //     vm.startPrank(RANDOM);
+
+    //     assertEq(collection.balanceOf(RANDOM), 0);
+    //             console.log("1");
+
+
+    //     dao.mint{value: 1 ether}();
+    //     assertEq(collection.balanceOf(RANDOM), 1);
+    //             console.log("2");
+
+
+    //     dao.mint{value: 1 ether}();
+    //     assertEq(collection.balanceOf(RANDOM), 2);
+    //             console.log("3");
+
+
+    //     dao.burn(1);
+    //     assertEq(collection.balanceOf(RANDOM), 1);
+
+    //     dao.mint{value: 1 ether}();
+    //     assertEq(collection.balanceOf(RANDOM), 2);
+
+    //     dao.mint{value: 1 ether}();
+    //     assertEq(collection.balanceOf(RANDOM), 3);
+
+    //     dao.burn(3);
+    //     assertEq(collection.balanceOf(RANDOM), 2);
+
+    //     vm.stopPrank();
+    // }
 
     //TODO: test the burning mechanism using the aaveVault to verify the slashingPercentage
 }
