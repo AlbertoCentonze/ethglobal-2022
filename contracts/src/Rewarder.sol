@@ -8,6 +8,11 @@ import {Superfluid, InstantDistributionAgreementV1} from "@superfluid-finance/ut
 import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
 import {ISuperToken} from "@superfluid-finance/interfaces/superfluid/ISuperToken.sol";
 
+// PUSH Comm Contract Interface
+interface IPUSHCommInterface {
+    function sendNotification(address _channel, address _recipient, bytes calldata _identity) external;
+}
+
 //TODO make it compliant with safeTransfer
 contract Rewarder is Owned {
     //NFTs
@@ -51,8 +56,27 @@ contract Rewarder is Owned {
     }
 
     // Permissionless, anyone can send the rewards at any time if he's willing to pay for gas fees
-    function sendRewards() public {
+    function sendRewards(address EPNS_COMM_ADDRESS, address channelAddress) public {
         uint256 distributionAmount = ISuperToken(rewardSuperToken).balanceOf(address(this));
         ida.distribute(ISuperToken(rewardSuperToken), indexId, distributionAmount);
+        IPUSHCommInterface(EPNS_COMM_ADDRESS).sendNotification(
+            channelAddress, // from channel - recommended to set channel via dApp and put it's value -> then once contract is deployed, go back and add the contract address as delegate for your channel
+            address(this), // to recipient, put address(this) in case you want Broadcast or Subset. For Targetted put the address to which you want to send
+            bytes(
+                string(
+                    // We are passing identity here: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                    abi.encodePacked(
+                        "0", // this is notification identity: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/identity/payload-identity-implementations
+                        "+", // segregator
+                        "3", // this is payload type: https://docs.epns.io/developers/developer-guides/sending-notifications/advanced/notification-payload-types/payload (1, 3 or 4) = (Broadcast, targetted or subset)
+                        "+", // segregator
+                        "Sending Rewards Alert", // this is notificaiton title
+                        "+", // segregator
+                        "Rewards are beeing sent through superfluid! ", // notification body
+                        " PUSH to you!" // notification body
+                    )
+                )
+            )
+        );
     }
 }
