@@ -15,6 +15,7 @@ abstract contract MaticTest is Test {
 
     address polPool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
     // polygon adress for Weth and aWeth
+    address wMatic = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
 
     function activateFork(uint256 block_number) public {
         string memory MATIC_RPC_URL = vm.rpcUrl("matic");

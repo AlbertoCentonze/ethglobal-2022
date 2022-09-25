@@ -2,46 +2,43 @@
 pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
+import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
+import {CallParams, XCallArgs} from "@connext/libraries/LibConnextStorage.sol";
 
-contract EnsCrossChain {
-/*
-    address public ensRegistrar;
-    //TODO: edit the functions arguments / the ensRegistrar's functions' selectors 
-    bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(uint256)"));
+contract EnsCrossChain is Owned {
+    address public ensManager;
+    //TODO: edit the functions arguments / the ensManager's functions' selectors 
+    bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(address,uint256)"));
     bytes4 internal burnSelector = bytes4(keccak256("burnSubDomain(uint256)"));
 
-    address targetContract;
-
-    uint32 originDomain; //TODO: trouver le originDomain pour Polygon / e.g. from Goerli (1735353714) 
-    uint32 destinationDomain; //TODO: trouver le destinationDomain pour Ethereum Mainnet / e.g. to Optimism-Goerli (1735356532) 
+    uint32 originDomain; // e.g. from Mumbai (Polygon testnet) (9991) 
+    uint32 destinationDomain; //e.g. to Goerli (1735353714) 
 
     IConnextHandler public immutable connext;
 
-    constructor(IConnextHandler _connext, address _targetContract ,uint32 _originDomain, uint32 _destinationDomain) {
+    constructor(IConnextHandler _connext ,uint32 _originDomain, uint32 _destinationDomain) Owned(msg.sender)  {
         connext = _connext;
         originDomain = _originDomain;
         destinationDomain = _destinationDomain;
-        targetContract = _targetContract;
     }
 
-    //setter for the ensRegistrar address
-    function setEnsRegistrar(address newEnsRegistrar) public onlyOwner {
-        ensRegistrar = newEnsRegistrar;
+    //setter for the ensManager address
+    function setEnsManager(address newEnsManager) public onlyOwner {
+        ensManager = newEnsManager;
     }
 
-    // This function will call the Registrar to mint the ENS-subdomain.
+    // This function will call the Registrar to mint the ENS-subdomain in the case a new NFT is minted
     function xMintSubDomain(
-        address to, // the address of the target contract
+        address to, //target contract
         address subDomainRecepient, //TODO: maybe not needed / the address receiving the subdomain 
-        uint32 nftId //the NFT ID
-        //TODO: add an argument of a name (packedString maybe?)
-    ) external payable {
+        uint256 nftId //the NFT ID
+    ) external payable onlyOwner {
         // the selector of this function is "mintSelector"
         //TODO: add the 3rd (name)
-        bytes memory callData = abi.encodeWithSelector(mintSlector, subDomainRecepient, nftId);
+        bytes memory callData = abi.encodeWithSelector(mintSelector, subDomainRecepient, nftId);
 
         CallParams memory callParams = CallParams({
-        to: ensRegistrar,
+        to: to,
         callData: callData,
         originDomain: originDomain,
         destinationDomain: destinationDomain,
@@ -66,16 +63,16 @@ contract EnsCrossChain {
     }
 
 
-    // This function will call the Registrar to burn the ENS-subdomain.
-    function xMintSubDomain(
+    // This function will call the Registrar to burn the ENS-subdomain in the case the NFT has been burnt
+    function xBurnSubDomain(
         address to, // the address of the target contract
-        uint32 nftId //the NFT ID
-    ) external payable {
+        uint256 nftId //the NFT ID
+    ) external payable onlyOwner {
         // the selector of this function is "burnSelector"
         bytes memory callData = abi.encodeWithSelector(burnSelector, nftId);
 
         CallParams memory callParams = CallParams({
-        to: ensRegistrar,
+        to: to,
         callData: callData,
         originDomain: originDomain,
         destinationDomain: destinationDomain,
@@ -98,5 +95,4 @@ contract EnsCrossChain {
 
         connext.xcall(xcallArgs);
     }
-		*/
 }

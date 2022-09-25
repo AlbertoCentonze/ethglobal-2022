@@ -2,37 +2,44 @@
 pragma solidity ^0.8.0;
 
 import "./IVault.sol";
+import "./NftManager.sol";
+import "./IAaveProtocolDataProvider.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol"; //TODO Use solmate Owner
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@aave/interfaces/IPool.sol";
 import "@forge-std/console.sol";
 
 contract AaveVault is IVault, Ownable {
     //constant addresses
+    address public aavePoolAddressProvider; //Polygon Mainnet: 0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb
+
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
-    //Aave contract address
-    address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD; //0x794a61358D6845594F94dc1DB02A252b5b4814aD = Polygon Aave Pool
-    address public aToken; //0x625E7708f30cA75bfd92586e17077590C60eb4cD = aPolUSDC
-    //address public L2EncoderAdd; // helper contract
-    //TODO: add Shirtless contract address
-    address public collection;
+    address public aavePool;
+    address public aToken; 
 
-    // uint256 public underlyingAsset = 0;
-
-    uint256 public totalUnderlyingDeposited = 0;
+    uint256 public totalUnderlyingDeposited;
 
     uint8 public slashingPercentange;
 
-    constructor(address _underlyingToken, address _aToken, uint8 _slashingPercentange) {
+    constructor(address _underlyingToken, uint8 _slashingPercentange, address _aavePoolAddressProvider) {
         underlyingToken = _underlyingToken;
-        aToken = _aToken;
+        aavePoolAddressProvider = _aavePoolAddressProvider;
+        aavePool = IPoolAddressesProvider(aavePoolAddressProvider).getPool();
+        address poolDataProvider = IPoolAddressesProvider(aavePoolAddressProvider).getPoolDataProvider();
+        (aToken,,) = IAaveProtocolDataProvider(poolDataProvider).getReserveTokensAddresses(underlyingToken);
         slashingPercentange = _slashingPercentange;
+    }
+
+    function getPendingRewards() public view returns(uint256){
+        return IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
     }
 
     function deposit(uint256 amount) external {
         IERC20(underlyingToken).transferFrom(msg.sender, address(this), amount);
         totalUnderlyingDeposited += amount;
         IERC20(underlyingToken).approve(address(aavePool), amount);
+
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
         console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
     }
@@ -48,7 +55,9 @@ contract AaveVault is IVault, Ownable {
     }
 
     function claimInterest(address recepient) public onlyOwner {
-        uint256 amount = IERC20(aToken).balanceOf(address(this)) - totalUnderlyingDeposited;
+        uint256 aTokenBalance = IERC20(aToken).balanceOf(address(this));
+        require(aTokenBalance > totalUnderlyingDeposited);
+        uint256 amount = aTokenBalance - totalUnderlyingDeposited;
         console.log("amount of interest = ", amount);
         IERC20(aToken).approve(aavePool, amount);
         IPool(aavePool).withdraw(underlyingToken, amount, recepient);
@@ -60,9 +69,9 @@ contract AaveVault is IVault, Ownable {
         withdraw(burnerValue(), recipient);
     }
 
-    function burnerValue() public view returns (uint256 withdrawAmount) {
-        // WTF uint256 circulatingSupply = Counters.current(owner.circulatingSupply());
-        // uint256 withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
+    function burnerValue() public returns (uint256 withdrawAmount) {
+        uint256 circulatingSupply = NftManager(owner()).circulatingSupply();
+        withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }
 
     function asset() public view returns (address) {
@@ -70,12 +79,6 @@ contract AaveVault is IVault, Ownable {
     }
 
     function totalAssets() public view returns (uint256) {
-        // return underlyingToken.balanceOf(address(this));
+        return totalUnderlyingDeposited;
     }
-
-    //TODO: rebalance function depending on the health factor (cross-chain)
-
-    //TODO: share per NFT ?
-
-    //TODO: claimable total yield / claimable yield per NFT ?
 }
