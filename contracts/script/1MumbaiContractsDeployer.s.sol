@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/* pragma solidity ^0.8.13;
 
 import "@forge-std/Script.sol";
 import "../src/NftManager.sol";
 import "../src/Shirtless.sol";
 import "../src/EnsCrossChain.sol";
 
-import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
+// import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
 import "@solmate/auth/Owned.sol";
 
 
@@ -14,7 +14,7 @@ import "@solmate/auth/Owned.sol";
 contract MumbaiContractsDeployer is Script {
     address MumbaiWMatic = 0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889;
     address MumbaiPoolAddressesProvider = 0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6;
-    IConnextHandler MumbaiConnext = IConnextHandler(0xD9e8b18Db316d7736A3d0386C59CA3332810df3B); //TODO
+    // IConnextHandler MumbaiConnext = IConnextHandler(0xD9e8b18Db316d7736A3d0386C59CA3332810df3B); //TODO
     uint32 MumbaiDomain = 9991; //TODO
     uint32 GoerlyDomain = 1735353714;//TODO
 
@@ -25,7 +25,7 @@ contract MumbaiContractsDeployer is Script {
         
         //start on Mumbai
         //deploy EnsCrossChain
-        address ensCrossChain = new EnsCrossChain(MumbaiConnext, MumbaiDomain, GoerlyDomain);
+        // address ensCrossChain = new EnsCrossChain(MumbaiConnext, MumbaiDomain, GoerlyDomain);
         //deploy the NFT collection
         address collection = new Shirtless();
         //deploy NftManager
@@ -62,3 +62,4 @@ contract MumbaiContractsDeployer is Script {
 
     }
 }
+*/

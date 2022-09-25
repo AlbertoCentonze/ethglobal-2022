@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/* pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
 import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
@@ -94,9 +94,6 @@ contract EnsCrossChain is Owned {
 
         connext.xcall(xcallArgs);
     }
-<<<<<<< HEAD
 }
-=======
+
 		*/
-}
->>>>>>> aave-superfluid

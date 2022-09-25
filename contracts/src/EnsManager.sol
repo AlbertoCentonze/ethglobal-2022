@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/* pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
 import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
@@ -68,10 +68,7 @@ contract EnsManager is Owned {
         //burn the subdomain linked to the NFT
         ENS(ensAddress).setSubnodeOwner(selfNode, bytes32(nftId), address(this));
     }
-<<<<<<< HEAD
-=======
 
     //TODO: add the possibility to associate an ardress to the ENS + twitter for example
-		*/
->>>>>>> aave-superfluid
 }
+*/

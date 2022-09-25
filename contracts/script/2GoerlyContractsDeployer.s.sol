@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/*pragma solidity ^0.8.13;
 
 import "@forge-std/Script.sol";
 import "../src/EnsManager.sol";
-import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
+// import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
 
 contract GoerlyContractsDeployer is Script {
     address ensCrossChain;//TODO
@@ -21,3 +21,4 @@ contract GoerlyContractsDeployer is Script {
         vm.stopBroadcast();
     }
 }
+*/

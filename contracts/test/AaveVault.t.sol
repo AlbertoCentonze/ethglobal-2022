@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 import "@forge-std/Test.sol";
 import "@forge-std/console.sol";
-import "./TestWithHelpers.sol";
+import "./helpers/TestWithHelpers.sol";
 import "../src/AaveVault.sol";
-import "./MaticTest.sol";
+import "./helpers/MaticTest.sol";
 
 //Those tests need to be executed on Polygon
 contract aaveVaultTest is TestWithHelpers, MaticTest {
@@ -17,7 +17,7 @@ contract aaveVaultTest is TestWithHelpers, MaticTest {
         //create the new vault
         vm.deal(RANDOM, 10 ether);
         vm.startPrank(DEPLOYER);
-        aaveVault = new AaveVault(polWeth, 50);
+        aaveVault = new AaveVault(polWeth, 50, address(this));
         vm.stopPrank();
         //give RANDOM enough to pay for gas
         vm.deal(RANDOM, 10 ether);

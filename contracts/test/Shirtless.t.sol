@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "./MaticTest.sol";
-import "./TestWithHelpers.sol";
+import "./helpers/MaticTest.sol";
+import "./helpers/TestWithHelpers.sol";
 
 import {IInstantDistributionAgreementV1} from
     "@superfluid-finance/interfaces/agreements/IInstantDistributionAgreementV1.sol";
