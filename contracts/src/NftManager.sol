@@ -27,7 +27,6 @@ contract NftManager is Ownable {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
-        //TODO: rewarder = new Rewarder();
         aaveVault = new AaveVault(_wMatic, 50, _aavePoolAddressProvider);
         collection = _collection;
         ensCrossChain = EnsCrossChain(_ensCrossChain);
