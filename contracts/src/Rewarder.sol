@@ -21,7 +21,7 @@ contract Rewarder is Owned {
     address public rewardSuperToken;
     uint32 indexId;
 
-    constructor(address _collection, address _rewardSuperToken, uint32 _indexId) Owned(msg.sender) {
+    constructor(address _collection, address _rewardSuperToken, uint32 _indexId) Owned(_collection) {
         collection = _collection;
         rewardSuperToken = _rewardSuperToken;
         indexId = _indexId;
