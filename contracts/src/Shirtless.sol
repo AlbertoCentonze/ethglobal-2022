@@ -19,9 +19,7 @@ contract Shirtless is ERC721, Owned {
 
     address rewarder;
 
-    constructor(address _rewarder) ERC721("Shirtless", "STL") Owned(msg.sender) {
-        rewarder = _rewarder;
-    }
+    constructor() ERC721("Shirtless", "STL") Owned(msg.sender) {}
 
     function transferFrom(address from, address to, uint256 id) public override (ERC721) {
         ERC721.transferFrom(from, to, id);
