@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
-/*pragma solidity ^0.8.13;
+pragma solidity ^0.8.13;
 
+import "@solmate/auth/Owned.sol";
 import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
+import {IExecutor} from "@connext/interfaces/IExecutor.sol";
 import {LibCrossDomainProperty} from "@connext/libraries/LibCrossDomainProperty.sol";
 import "@ens/ENS.sol";
-//TODO: ownable
 
-contract EnsManager {
+contract EnsManager is Owned {
     address ensAddress;
 
     // The address of Source.sol
@@ -18,7 +19,7 @@ contract EnsManager {
     // The address of the Connext Executor contract
     IExecutor public executor;
 
-    uint32 selfNode;
+    bytes32 selfNode;
 
     // A modifier for authenticated function calls.
     // Note: This is an important security consideration. If your target
@@ -39,34 +40,36 @@ contract EnsManager {
         address _originContract,
         uint32 _originDomain,
         IConnextHandler _connext, //https://docs.connext.network/resources/testnet
-        address _ensAddress //https://docs.ens.domains/ens-deployments
-    ) {
+        address _ensAddress, //https://docs.ens.domains/ens-deployments
+        bytes32 _selfNode
+    ) Owned(msg.sender) {
         originContract = _originContract;
         originDomain = _originDomain;
         executor = _connext.executor();
         ensAddress = _ensAddress;
+        selfNode = _selfNode;
     }
 
-    function setSelfNode(uint32 _selfNode) public onlyOwner {
-
+    function setSelfNode(bytes32 _selfNode) public onlyOwner {
+        selfNode = _selfNode;
     }
 
   // Authenticated mint function
   //TODO: change name and args
     function mintSubDomain(address recipient, uint256 nftId) 
         external onlyExecutor   {
-        //TODO: mint the subdomain linked to the NFT
-        ENS(ensAddress).setSubnodeRecord(selfNode, nftId, recipient);
+        //mint the subdomain linked to the NFT
+        ENS(ensAddress).setSubnodeOwner(selfNode, bytes32(nftId), recipient);
     }
 
     // Authenticated burn function
     //TODO: change name and args
-    function burnSubDomain(uint32 newValue) 
+    function burnSubDomain(uint256 nftId) 
         external onlyExecutor 
     {
-        //TODO: burn the subdomain linked to the NFT
+        //burn the subdomain linked to the NFT
+        ENS(ensAddress).setSubnodeOwner(selfNode, bytes32(nftId), address(this));
     }
 
     //TODO: add the possibility to associate an ardress to the ENS + twitter for example
 }
-*/

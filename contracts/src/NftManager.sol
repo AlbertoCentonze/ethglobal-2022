@@ -20,23 +20,23 @@ contract NftManager is Ownable {
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
     address rewarder;
-    //TODO: EnsCrossChain ensCrossChain;
+    address ensCrossChain;//TODO: EnsCrossChain ensCrossChain;
 
-    constructor (uint256 _mintPrice, uint256 _maxSupply, address _wMatic, address _aavePoolAddressProvider) {
+    constructor (Shirtless _collection, uint256 _mintPrice, uint256 _maxSupply, address _wMatic, address _aavePoolAddressProvider, address _ensCrossChain) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
         //TODO: rewarder = new Rewarder();
         aaveVault = new AaveVault(_wMatic, 50, _aavePoolAddressProvider);
-        collection = new Shirtless();
-        //TODO: ensCrossChain = _ensCrossChain;
+        collection = _collection;
+        ensCrossChain = _ensCrossChain;
     }
 
     function circulatingSupply() public view returns(uint256) {
         return collection.circulatingSupply();
     }
 
-    function setWMaticAdd(address _wMatic) public onlyOwner {
+    function setWMaticContract(address _wMatic) public onlyOwner {
         wMatic = _wMatic;
     }
 
@@ -48,8 +48,8 @@ contract NftManager is Ownable {
         aaveVault = _aaveVault;
     }
 
-    function setCollection(address collectionAddress) public onlyOwner {
-        collection = Shirtless(collectionAddress);
+    function setEnsCrossChain(address _ensCrossChain) public onlyOwner {
+        ensCrossChain = _ensCrossChain;
     }
 
     function setPrice(uint256 newPrice) public onlyOwner {
@@ -67,13 +67,13 @@ contract NftManager is Ownable {
         IWMATIC(wMatic).deposit{value : msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
-        //TODO: ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
+        //TODO: ensCrossChain.xMintSubDomain(ensManager, msg.sender, collection.mintId());
     }
 
     function burn(uint256 id) public {
         require(collection.ownerOf(id) == msg.sender, "NOT_OWNER");
         collection.burn(id);
         aaveVault.withdrawBurnerValue(msg.sender);
-        //TODO: ensCrossChain.xMintSubDomain(id)
+        //TODO: ensCrossChain.xBurnSubDomain(ensManager, id);
     }
 }

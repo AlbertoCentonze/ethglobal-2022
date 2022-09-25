@@ -25,3 +25,5 @@
 [submodule "contracts/lib/ens"]
 	path = contracts/lib/ens
 	url = https://github.com/ensdomains/ens
+[submodule "/home/l0gykal/Bureau/Code-Solidity/ethglobal-2022/contracts/lib/nxtp"]
+	branch = prod

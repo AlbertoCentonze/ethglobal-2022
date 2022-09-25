@@ -7,3 +7,4 @@
 @aave-periphery/=lib/aave-v3-periphery/contracts/
 @ens/=lib/ens/contracts/
 @connext/=lib/nxtp/packages/deployments/contracts/contracts/core/connext/
+@openzeppelin-upgradable/=lib/nxtp/packages/deployments/contracts/lib/openzeppelin-contracts-upgradeable/
