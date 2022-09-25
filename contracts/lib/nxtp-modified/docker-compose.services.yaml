@@ -1,0 +1,258 @@
+version: "3.3"
+
+services:
+  router-publisher:
+    container_name: router-publisher
+    depends_on:
+      - message-queue
+      - sequencer-publisher
+      - signer-router
+    image: ${ROUTER_PUBLISHER_IMAGE}
+    restart: always
+    ports:
+      - "8880:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/router/publisher/:/home/node/agents/publisher/
+      - ${PWD}/docker/router/config.local.json:/home/node/packages/agents/router/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+
+  router-subscriber:
+    container_name: router-subscriber
+    depends_on:
+      - message-queue
+      - sequencer-publisher
+      - signer-router
+    image: ${ROUTER_SUBSCRIBER_IMAGE}
+    restart: always
+    ports:
+      - "8881:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/router/subscriber/:/home/node/agents/subscriber/
+      - ${PWD}/docker/router/config.local.json:/home/node/packages/agents/router/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+
+  router-executor:
+    container_name: router-executor
+    depends_on:
+      - message-queue
+      - sequencer-publisher
+      - signer-router
+    image: ${ROUTER_EXECUTOR_IMAGE}
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/router/executor/:/home/node/agents/executor/
+      - ${PWD}/docker/router/config.local.json:/home/node/packages/agents/router/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+
+  signer-router:
+    container_name: signer-router
+    image: "ghcr.io/connext/web3signer:latest"
+    restart: always
+    environment:
+      - WEB3_SIGNER_PRIVATE_KEY=$WEB3_SIGNER_PRIVATE_KEY_ROUTER
+      - WEB3SIGNER_HTTP_HOST_ALLOWLIST=*
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
+  router-cache:
+    container_name: router-cache
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  sequencer-publisher:
+    container_name: sequencer-publisher
+    depends_on:
+      - message-queue
+    image: ${SEQUENCER_PUBLISHER_IMAGE}
+    restart: always
+    ports:
+      - "8882:8081"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/sequencer/:/home/node/agents/sequencer/
+      - ${PWD}/docker/sequencer/config.local.json:/home/node/packages/agents/sequencer/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+
+  sequencer-subscriber:
+    container_name: sequencer-subscriber
+    depends_on:
+      - message-queue
+    image: ${SEQUENCER_SUBSCRIBER_IMAGE}
+    restart: always
+    ports:
+      - "8883:8081"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/sequencer/:/home/node/agents/sequencer/
+      - ${PWD}/docker/sequencer/config.local.json:/home/node/packages/agents/sequencer/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+
+  signer-sequencer:
+    container_name: signer-sequencer
+    image: "ghcr.io/connext/web3signer:latest"
+    restart: always
+    environment:
+      - WEB3_SIGNER_PRIVATE_KEY=$WEB3_SIGNER_PRIVATE_KEY_SEQUENCER
+      - WEB3SIGNER_HTTP_HOST_ALLOWLIST=*
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
+  message-queue:
+    container_name: message-queue
+    image: rabbitmq:3.10-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  sequencer-cache:
+    container_name: sequencer-cache
+    image: redis:latest
+    ports:
+      - "6380:6379"
+
+  relayer:
+    container_name: relayer
+    depends_on:
+      - sequencer-subscriber
+    image: ${RELAYER_IMAGE}
+    restart: always
+    ports:
+      - "8082:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/relayer/:/home/node/agents/relayer/
+      - ${PWD}/docker/relayer/config.local.json:/home/node/packages/agents/relayer/config.json
+
+  signer-relayer:
+    container_name: signer-relayer
+    image: "ghcr.io/connext/web3signer:latest"
+    restart: always
+    environment:
+      - WEB3_SIGNER_PRIVATE_KEY=$WEB3_SIGNER_PRIVATE_KEY_RELAYER
+      - WEB3SIGNER_HTTP_HOST_ALLOWLIST=*
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
+  relayer-cache:
+    container_name: relayer-cache
+    image: redis:latest
+    ports:
+      - "6381:6379"
+
+  cartographer-transfers:
+    container_name: cartographer-transfers
+    depends_on:
+      - cartographer-database
+      - cartographer-api
+    image: ${CARTOGRAPHER_TRANSFERS_IMAGE}
+    restart: always
+    ports:
+      - "8083:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/cartographer/transfers/:/home/node/agents/cartographer/
+      - ${PWD}/docker/cartographer/config.local.json:/home/node/packages/agents/cartographer/poller/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+      DATABASE_URL: "postgres://postgres:qwerty@cartographer-database:5432/connext?sslmode=disable"
+
+  cartographer-routers:
+    container_name: cartographer-routers
+    depends_on:
+      - cartographer-database
+      - cartographer-api
+    image: ${CARTOGRAPHER_ROUTERS_IMAGE}
+    restart: always
+    ports:
+      - "8093:8080"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    volumes:
+      - ${PWD}/docker/cartographer/routers/:/home/node/agents/cartographer/
+      - ${PWD}/docker/cartographer/config.local.json:/home/node/packages/agents/cartographer/poller/config.json
+    environment:
+      GRAPH_1337_ENDPOINT: "http://graph-node-1337:8000/subgraphs/name/connext/nxtp"
+      GRAPH_1338_ENDPOINT: "http://graph-node-1338:8000/subgraphs/name/connext/nxtp"
+      DATABASE_URL: "postgres://postgres:qwerty@cartographer-database:5432/connext?sslmode=disable"
+
+  cartographer-database:
+    container_name: cartographer-database
+    image: postgres
+    ports:
+      - "5434:5432"
+    command: ["postgres"]
+    environment:
+      POSTGRES_PASSWORD: qwerty
+
+  cartographer-api:
+    container_name: cartographer-api
+    depends_on:
+      - cartographer-database
+    image: postgrest/postgrest:v9.0.0.20220107
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://reader:3eadooor@cartographer-database:5432/connext
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: query
+
+  # lighthouse:
+  #   container_name: lighthouse
+  #   depends_on:
+  #     - cartographer-api
+  #   image: ${LIGHTHOUSE_IMAGE}
+  #   restart: always
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: 10m
+  #   volumes:
+  #     - ${PWD}/docker/lighthouse/:/home/node/agents/lighthouse/
+  #     - ${PWD}/docker/lighthouse/config.local.json:/home/node/packages/agents/lighthouse/config.json

@@ -1,0 +1,23 @@
+{
+  "extends": "../../../.nycrc.json",
+  "exclude": [
+    "src/index.ts",
+    "src/sequencer.ts",
+    "src/publisher.ts",
+    "src/subscriber.ts",
+    "src/executer.ts",
+    "src/bindings/publisher/index.ts",
+    "src/bindings/subscriber/index.ts",
+    "src/bindings/subscriber/auctions/index.ts",
+    "src/bindings/subscriber/server/index.ts",
+    "src/lib/errors/*.ts",
+    "src/bindings/index.ts",
+    "src/lib/entities/*.ts",
+    "src/lib/errors/*.ts",
+    "src/lib/operation/index.ts",
+    "src/lib/entities/*.ts",
+    "src/lib/errors/*.ts",
+    "test/**/*.ts"
+  ],
+  "all": true
+}

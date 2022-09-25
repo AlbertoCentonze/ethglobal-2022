@@ -1,0 +1,33 @@
+{
+  "chains": {
+    "1735353714": {
+      "assets": [
+        {
+          "name": "TEST",
+          "symbol": "TEST",
+          "address": "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1"
+        }
+      ],
+      "providers": ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"]
+    },
+    "1735356532": {
+      "assets": [
+        {
+          "name": "TEST",
+          "symbol": "TEST",
+          "address": "0x68Db1c8d85C09d546097C65ec7DCBFF4D6497CbF"
+        },
+        {
+          "name": "madWETH",
+          "symbol": "TWETH",
+          "address": "0x39B061B7e41DE8B721f9aEcEB6b3f17ECB7ba63E"
+        }
+      ],
+      "providers": ["https://goerli.optimism.io/"]
+    }
+  },
+  "logLevel": "debug",
+  "mnemonic": "<YOUR MNEMONIC HERE>",
+  "environment": "production",
+  "network": "testnet"
+}
