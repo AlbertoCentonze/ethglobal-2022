@@ -36,7 +36,8 @@ contract AaveVault is IVault, Ownable {
         IERC20(underlyingToken).approve(address(aavePool), amount);
 
         IPool(aavePool).supply(underlyingToken, amount, address(this), 0);
-        console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
+
+        // console.log("Balance of the aaveVault in aToken after depositing is ", IERC20(aToken).balanceOf(address(this)));
     }
 
     function withdraw(uint256 amount, address recepient) public onlyOwner {
