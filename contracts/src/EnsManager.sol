@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/*pragma solidity ^0.8.13;
 
-import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
-import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
-import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+import {IConnextHandler} from "@connext/interfaces/IConnextHandler.sol";
+import {LibCrossDomainProperty} from "@connext/libraries/LibCrossDomainProperty.sol";
 import "@ens/ENS.sol";
-//TODO: anowble
+//TODO: ownable
 
 contract EnsManager {
     address ensAddress;
@@ -39,7 +38,7 @@ contract EnsManager {
     constructor(
         address _originContract,
         uint32 _originDomain,
-        IConnextHandler _connext,
+        IConnextHandler _connext, //https://docs.connext.network/resources/testnet
         address _ensAddress //https://docs.ens.domains/ens-deployments
     ) {
         originContract = _originContract;
@@ -54,7 +53,7 @@ contract EnsManager {
 
   // Authenticated mint function
   //TODO: change name and args
-    function mintSubDomain(address recipient, uint32 nftId) 
+    function mintSubDomain(address recipient, uint256 nftId) 
         external onlyExecutor   {
         //TODO: mint the subdomain linked to the NFT
         ENS(ensAddress).setSubnodeRecord(selfNode, nftId, recipient);
@@ -70,3 +69,4 @@ contract EnsManager {
 
     //TODO: add the possibility to associate an ardress to the ENS + twitter for example
 }
+*/

@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./IVault.sol";
 import "./NftManager.sol";
+import "./IAaveProtocolDataProvider.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -11,18 +12,22 @@ import "@forge-std/console.sol";
 
 contract AaveVault is IVault, Ownable {
     //constant addresses
+    address public aavePoolAddressProvider; //Polygon Mainnet: 0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb
+
     address public underlyingToken; //0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174 = Polygon USDC
-    //Aave contract address
-    address public aavePool = 0x794a61358D6845594F94dc1DB02A252b5b4814aD;
+    address public aavePool;
     address public aToken; 
 
     uint256 public totalUnderlyingDeposited;
 
     uint8 public slashingPercentange;
 
-    constructor(address _underlyingToken, uint8 _slashingPercentange) {
+    constructor(address _underlyingToken, uint8 _slashingPercentange, address _aavePoolAddressProvider) {
         underlyingToken = _underlyingToken;
-        //aToken = _aToken;
+        aavePoolAddressProvider = _aavePoolAddressProvider;
+        aavePool = IPoolAddressesProvider(aavePoolAddressProvider).getPool();
+        address poolDataProvider = IPoolAddressesProvider(aavePoolAddressProvider).getPoolDataProvider();
+        (aToken,,) = IAaveProtocolDataProvider(poolDataProvider).getReserveTokensAddresses(underlyingToken);
         slashingPercentange = _slashingPercentange;
     }
 

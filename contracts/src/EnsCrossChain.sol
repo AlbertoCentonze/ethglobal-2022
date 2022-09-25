@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+/*pragma solidity ^0.8.13;
 
 import "@solmate/auth/Owned.sol";
 import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
@@ -34,7 +34,7 @@ contract EnsCrossChain {
     // This function will call the Registrar to mint the ENS-subdomain in the case a new NFT is minted
     function xMintSubDomain(
         address subDomainRecepient, //TODO: maybe not needed / the address receiving the subdomain 
-        uint32 nftId //the NFT ID
+        uint256 nftId //the NFT ID
         //TODO: add an argument of a name (packedString maybe?)
     ) external payable {
         // the selector of this function is "mintSelector"
@@ -70,7 +70,7 @@ contract EnsCrossChain {
     // This function will call the Registrar to burn the ENS-subdomain in the case the NFT has been burnt
     function xBurnSubDomain(
         address to, // the address of the target contract
-        uint32 nftId //the NFT ID
+        uint256 nftId //the NFT ID
     ) external payable {
         // the selector of this function is "burnSelector"
         bytes memory callData = abi.encodeWithSelector(burnSelector, nftId);
@@ -100,3 +100,4 @@ contract EnsCrossChain {
         connext.xcall(xcallArgs);
     }
 }
+*/

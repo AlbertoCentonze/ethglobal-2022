@@ -20,19 +20,19 @@ contract NftManager is Ownable {
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
     address rewarder;
-    EnsCrossChain ensCrossChain;
+    //TODO: EnsCrossChain ensCrossChain;
 
-    constructor (uint256 _mintPrice, uint256 _maxSupply ,address _wMatic, address _rewarder, address _ensCrossChain) {
+    constructor (uint256 _mintPrice, uint256 _maxSupply, address _wMatic, address _aavePoolAddressProvider) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
-        rewarder = _rewarder;
-        aaveVault = new AaveVault(_wMatic, 50);
+        //TODO: rewarder = new Rewarder();
+        aaveVault = new AaveVault(_wMatic, 50, _aavePoolAddressProvider);
         collection = new Shirtless();
-        ensCrossChain = _ensCrossChain;
+        //TODO: ensCrossChain = _ensCrossChain;
     }
 
-    function circulatingSupply() public returns(uint256) {
+    function circulatingSupply() public view returns(uint256) {
         return collection.circulatingSupply();
     }
 
@@ -67,12 +67,13 @@ contract NftManager is Ownable {
         IWMATIC(wMatic).deposit{value : msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
-        ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
+        //TODO: ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
     }
 
     function burn(uint256 id) public {
         require(collection.ownerOf(id) == msg.sender, "NOT_OWNER");
         collection.burn(id);
         aaveVault.withdrawBurnerValue(msg.sender);
+        //TODO: ensCrossChain.xMintSubDomain(id)
     }
 }
