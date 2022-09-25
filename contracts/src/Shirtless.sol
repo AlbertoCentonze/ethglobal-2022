@@ -47,17 +47,13 @@ contract Shirtless is ERC721, Owned {
         indexId = _indexId;
     }
 
-    function updateUnitsAccordingToBalance(address unitsOwner) public {
-        ida.updateSubscriptionUnits(rewardToken, indexId, unitsOwner, uint128(balanceOf(unitsOwner)));
-    }
-
     function transferFrom(address from, address to, uint256 id) public override (ERC721) {
         ERC721.transferFrom(from, to, id);
-        updateUnitsAccordingToBalance(from);
-        updateUnitsAccordingToBalance(to);
+        // updateUnitsAccordingToBalance(from);
+        // updateUnitsAccordingToBalance(to);
     }
 
-    function tokenURI(uint256 id) public view override returns (string memory) {
+    function tokenURI(uint256 id) public pure override returns (string memory) {
         return "we don't have a url yet"; //TODO
     }
 
@@ -65,12 +61,12 @@ contract Shirtless is ERC721, Owned {
         mintId.increment();
         circulatingSupply.increment();
         _safeMint(to, id, data);
-        updateUnitsAccordingToBalance(to);
+        // updateUnitsAccordingToBalance(to);
     }
 
     function burn(uint256 id) public onlyOwner {
         circulatingSupply.decrement();
         _burn(id);
-        updateUnitsAccordingToBalance(ownerOf(id));
+        // updateUnitsAccordingToBalance(ownerOf(id));
     }
 }

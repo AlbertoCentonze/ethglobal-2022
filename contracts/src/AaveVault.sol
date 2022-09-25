@@ -64,7 +64,7 @@ contract AaveVault is IVault, Ownable {
         withdraw(burnerValue(), recipient);
     }
 
-    function burnerValue() public returns (uint256 withdrawAmount) {
+    function burnerValue() public view returns (uint256 withdrawAmount) {
         uint256 circulatingSupply = NftManager(owner()).circulatingSupply();
         withdrawAmount = totalUnderlyingDeposited / (circulatingSupply * 100) * slashingPercentange;
     }

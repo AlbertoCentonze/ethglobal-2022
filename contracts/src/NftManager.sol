@@ -15,7 +15,7 @@ contract NftManager is Ownable {
     Shirtless collection;
     uint256 mintPrice = 1 ether;
 
-    uint256 maxSupply;
+    uint128 maxSupply; // uint128 not to break superfluid ida's uints
 
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
@@ -24,7 +24,7 @@ contract NftManager is Ownable {
 
     constructor(
         uint256 _mintPrice,
-        uint256 _maxSupply,
+        uint128 _maxSupply,
         address _wMatic,
         address _rewarder /*, address _ensCrossChain*/
     ) {
