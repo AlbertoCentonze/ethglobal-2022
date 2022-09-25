@@ -30,7 +30,7 @@ contract NftManager is Ownable {
         //TODO: rewarder = new Rewarder();
         aaveVault = new AaveVault(_wMatic, 50, _aavePoolAddressProvider);
         collection = _collection;
-        ensCrossChain = _ensCrossChain;
+        ensCrossChain = EnsCrossChain(_ensCrossChain);
     }
 
     function circulatingSupply() public view returns(uint256) {
@@ -50,7 +50,7 @@ contract NftManager is Ownable {
     }
 
     function setEnsCrossChain(address _ensCrossChain) public onlyOwner {
-        ensCrossChain = _ensCrossChain;
+        ensCrossChain = EnsCrossChain(_ensCrossChain);
     }
 
     function setEnsManager(address _ensManager) public onlyOwner {
