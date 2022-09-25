@@ -17,7 +17,7 @@ contract DaoTest is TestWithHelpers, MaticTest {
     Shirtless collection;
 
     function setUp() public {
-        address REWARDER = makeAddr('rewarder');
+        address REWARDER = makeAddr("rewarder");
         // Deploy the DAO contract
         dao = new NftManager(1, 10, wMatic, REWARDER);
 

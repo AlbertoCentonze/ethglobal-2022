@@ -15,7 +15,7 @@ contract NftManager is Ownable {
     Shirtless collection;
     uint256 mintPrice = 1 ether;
 
-    uint256 maxSupply;
+    uint128 maxSupply; // uint128 not to break superfluid ida's uints
 
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
@@ -23,17 +23,21 @@ contract NftManager is Ownable {
     EnsCrossChain ensCrossChain;
     address ensManager;
 
-    constructor (Shirtless _collection, uint256 _mintPrice, uint256 _maxSupply, address _wMatic, address _aavePoolAddressProvider, address _ensCrossChain) {
+    constructor(
+        uint256 _mintPrice,
+        uint128 _maxSupply,
+        address _wMatic,
+        address _rewarder /*, address _ensCrossChain*/
+    ) {
         mintPrice = _mintPrice;
         maxSupply = _maxSupply;
         wMatic = _wMatic;
-        //TODO: rewarder = new Rewarder();
-        aaveVault = new AaveVault(_wMatic, 50, _aavePoolAddressProvider);
-        collection = _collection;
-        ensCrossChain = EnsCrossChain(_ensCrossChain);
+        rewarder = _rewarder;
+        aaveVault = new AaveVault(_wMatic, 50);
+        // ensCrossChain = _ensCrossChain;
     }
 
-    function circulatingSupply() public view returns(uint256) {
+    function circulatingSupply() public view returns (uint256) {
         return collection.circulatingSupply();
     }
 
@@ -69,10 +73,10 @@ contract NftManager is Ownable {
     function mint() public payable {
         require(collection.mintId() < maxSupply, "Can't mint more NFTs than max supply");
         require(msg.value == mintPrice, "Value sent in tx does not match mint price");
-        IWMATIC(wMatic).deposit{value : msg.value}();
+        IWMATIC(wMatic).deposit{value: msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
-        ensCrossChain.xMintSubDomain(ensManager, msg.sender, collection.mintId());
+        // ensCrossChain.xMintSubDomain(msg.sender, collection.mintId());
     }
 
     function burn(uint256 id) public {

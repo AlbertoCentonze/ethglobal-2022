@@ -68,4 +68,10 @@ contract EnsManager is Owned {
         //burn the subdomain linked to the NFT
         ENS(ensAddress).setSubnodeOwner(selfNode, bytes32(nftId), address(this));
     }
+<<<<<<< HEAD
+=======
+
+    //TODO: add the possibility to associate an ardress to the ENS + twitter for example
+		*/
+>>>>>>> aave-superfluid
 }
