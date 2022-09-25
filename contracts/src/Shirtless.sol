@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 import {Superfluid, InstantDistributionAgreementV1} from "@superfluid-finance/utils/SuperfluidFrameworkDeployer.sol";
 import {IDAv1Library} from "@superfluid-finance/apps/IDAv1Library.sol";
+import {ISuperToken} from "@superfluid-finance/interfaces/superfluid/ISuperToken.sol";
 
 // Shirtless is just a placeholder name
 /**
@@ -16,15 +17,21 @@ contract Shirtless is ERC721, Owned {
     using Counters for Counters.Counter;
     using IDAv1Library for IDAv1Library.InitData;
 
-    IDAv1Library.InitData internal idaLib;
+    IDAv1Library.InitData internal ida;
     Superfluid host;
 
     Counters.Counter public circulatingSupply;
     Counters.Counter public mintId;
 
-    constructor(address superfluidHost) ERC721("Shirtless", "STL") Owned(msg.sender) {
+    address rewardToken; //TODO Make setter ?
+    uint32 indexId; //TODO
+
+    constructor(address superfluidHost, address _rewardToken, uint32 _indexId)
+        ERC721("Shirtless", "STL")
+        Owned(msg.sender)
+    {
         host = Superfluid(superfluidHost);
-        idaLib = IDAv1Library.InitData(
+        ida = IDAv1Library.InitData(
             host,
             InstantDistributionAgreementV1(
                 address(
@@ -34,6 +41,20 @@ contract Shirtless is ERC721, Owned {
                 )
             )
         );
+
+        ida.createIndex(ISuperToken(address(this)), 0);
+        rewardToken = _rewardToken;
+        indexId = _indexId;
+    }
+
+    function updateUnitsAccordingToBalance(address unitsOwner) public {
+        ida.updateSubscriptionUnits(rewardToken, indexId, unitsOwner, uint128(balanceOf(unitsOwner)));
+    }
+
+    function transferFrom(address from, address to, uint256 id) public override (ERC721) {
+        ERC721.transferFrom(from, to, id);
+        updateUnitsAccordingToBalance(from);
+        updateUnitsAccordingToBalance(to);
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
@@ -44,10 +65,12 @@ contract Shirtless is ERC721, Owned {
         mintId.increment();
         circulatingSupply.increment();
         _safeMint(to, id, data);
+        updateUnitsAccordingToBalance(to);
     }
 
     function burn(uint256 id) public onlyOwner {
         circulatingSupply.decrement();
         _burn(id);
+        updateUnitsAccordingToBalance(ownerOf(id));
     }
 }
