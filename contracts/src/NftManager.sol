@@ -20,7 +20,8 @@ contract NftManager is Ownable {
     address wMatic; // 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
     AaveVault aaveVault;
     address rewarder;
-    address ensCrossChain;//TODO: EnsCrossChain ensCrossChain;
+    EnsCrossChain ensCrossChain;
+    address ensManager;
 
     constructor (Shirtless _collection, uint256 _mintPrice, uint256 _maxSupply, address _wMatic, address _aavePoolAddressProvider, address _ensCrossChain) {
         mintPrice = _mintPrice;
@@ -52,6 +53,10 @@ contract NftManager is Ownable {
         ensCrossChain = _ensCrossChain;
     }
 
+    function setEnsManager(address _ensManager) public onlyOwner {
+        ensManager = _ensManager;
+    }
+
     function setPrice(uint256 newPrice) public onlyOwner {
         require(newPrice > 0);
         mintPrice = newPrice;
@@ -67,13 +72,13 @@ contract NftManager is Ownable {
         IWMATIC(wMatic).deposit{value : msg.value}();
         aaveVault.deposit(msg.value);
         collection.mint(msg.sender, collection.mintId(), "");
-        //TODO: ensCrossChain.xMintSubDomain(ensManager, msg.sender, collection.mintId());
+        ensCrossChain.xMintSubDomain(ensManager, msg.sender, collection.mintId());
     }
 
     function burn(uint256 id) public {
         require(collection.ownerOf(id) == msg.sender, "NOT_OWNER");
         collection.burn(id);
         aaveVault.withdrawBurnerValue(msg.sender);
-        //TODO: ensCrossChain.xBurnSubDomain(ensManager, id);
+        ensCrossChain.xBurnSubDomain(ensManager, id);
     }
 }

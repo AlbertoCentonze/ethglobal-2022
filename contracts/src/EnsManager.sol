@@ -55,7 +55,6 @@ contract EnsManager is Owned {
     }
 
   // Authenticated mint function
-  //TODO: change name and args
     function mintSubDomain(address recipient, uint256 nftId) 
         external onlyExecutor   {
         //mint the subdomain linked to the NFT
@@ -63,13 +62,10 @@ contract EnsManager is Owned {
     }
 
     // Authenticated burn function
-    //TODO: change name and args
     function burnSubDomain(uint256 nftId) 
         external onlyExecutor 
     {
         //burn the subdomain linked to the NFT
         ENS(ensAddress).setSubnodeOwner(selfNode, bytes32(nftId), address(this));
     }
-
-    //TODO: add the possibility to associate an ardress to the ENS + twitter for example
 }

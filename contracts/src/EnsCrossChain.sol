@@ -7,7 +7,7 @@ import {CallParams, XCallArgs} from "@connext/libraries/LibConnextStorage.sol";
 
 contract EnsCrossChain is Owned {
     address public ensManager;
-    //TODO: edit the functions arguments / the ensManager's functions' selectors 
+    //the ensManager's functions' selectors 
     bytes4 internal mintSelector = bytes4(keccak256("mintSubDomain(address,uint256)"));
     bytes4 internal burnSelector = bytes4(keccak256("burnSubDomain(uint256)"));
 
@@ -30,11 +30,10 @@ contract EnsCrossChain is Owned {
     // This function will call the Registrar to mint the ENS-subdomain in the case a new NFT is minted
     function xMintSubDomain(
         address to, //target contract
-        address subDomainRecepient, //TODO: maybe not needed / the address receiving the subdomain 
+        address subDomainRecepient, //the address receiving the subdomain 
         uint256 nftId //the NFT ID
     ) external payable onlyOwner {
         // the selector of this function is "mintSelector"
-        //TODO: add the 3rd (name)
         bytes memory callData = abi.encodeWithSelector(mintSelector, subDomainRecepient, nftId);
 
         CallParams memory callParams = CallParams({
