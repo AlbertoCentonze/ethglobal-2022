@@ -2,7 +2,7 @@
 @forge-std/=lib/forge-std/src/
 @openzeppelin/=lib/openzeppelin-contracts/
 @solmate/=lib/solmate/src/
-@superfluid-finance-modified/=lib/protocol-monorepo/packages/ethereum-contracts/contracts/
+@superfluid-finance/=lib/protocol-monorepo-modified/packages/ethereum-contracts/contracts/
 @aave/=lib/aave-v3-core/contracts/
 @aave-periphery/=lib/aave-v3-periphery/contracts/
 @ens/=lib/ens/contracts/
